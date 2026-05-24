@@ -23,11 +23,11 @@ export function CalendlyEmbed() {
       const name = sessionStorage.getItem('lead.name') ?? '';
       if (email) u.searchParams.set('email', email);
       if (name) u.searchParams.set('name', name);
-      // Dark theme params Calendly supports
+      // Light-theme params matching our new design
       u.searchParams.set('hide_event_type_details', '0');
-      u.searchParams.set('background_color', '161614');
-      u.searchParams.set('text_color', 'f5f4ef');
-      u.searchParams.set('primary_color', 'd9ff3d');
+      u.searchParams.set('background_color', 'ffffff');
+      u.searchParams.set('text_color', '1a1d3a');
+      u.searchParams.set('primary_color', '6c5ce7');
       next = u.toString();
     } catch {
       // fall back to raw base
@@ -61,17 +61,18 @@ export function CalendlyEmbed() {
     return (
       <div
         style={{
-          border: `1px dashed ${theme.palette.border}`,
-          borderRadius: 8,
+          border: `1px dashed ${theme.palette.borderAccent}`,
+          borderRadius: theme.radius.lg,
           padding: 24,
-          fontFamily: theme.fonts.mono,
-          fontSize: 12,
-          color: theme.palette.muted,
+          fontFamily: theme.fonts.body,
+          fontSize: 13,
+          color: theme.palette.fgMuted,
           lineHeight: 1.6,
           textAlign: 'center',
+          background: theme.palette.surface,
         }}
       >
-        <div style={{ color: theme.palette.fg, marginBottom: 6 }}>
+        <div style={{ color: theme.palette.fg, marginBottom: 6, fontWeight: 600 }}>
           Calendly not configured.
         </div>
         Set <code>NEXT_PUBLIC_CALENDLY_URL</code> in your environment to enable booking.
@@ -85,9 +86,9 @@ export function CalendlyEmbed() {
         style={{
           height: 720,
           background: theme.palette.surface,
-          border: `1px solid ${theme.palette.border}`,
-          borderRadius: 8,
-          opacity: 0.5,
+          border: `1px solid ${theme.palette.borderSoft}`,
+          borderRadius: theme.radius.xl,
+          opacity: 0.7,
         }}
       />
     );
@@ -96,15 +97,16 @@ export function CalendlyEmbed() {
   return (
     <>
       <div
-        className="calendly-inline-widget dfy-calendly"
+        className="calendly-inline-widget"
         data-url={url}
         style={{
-          minWidth: 320,
+          minWidth: 0,
           height: 720,
-          border: `1px solid ${theme.palette.border}`,
-          borderRadius: 8,
+          border: `1px solid ${theme.palette.borderSoft}`,
+          borderRadius: theme.radius.xl,
           overflow: 'hidden',
           background: theme.palette.surface,
+          boxShadow: theme.shadow.card,
         }}
       />
       <Script

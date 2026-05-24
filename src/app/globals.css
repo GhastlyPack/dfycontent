@@ -1,3 +1,15 @@
+:root {
+  --bg: #f0f0f3;
+  --bg-subtle: #e8e8eb;
+  --surface: #ffffff;
+  --fg: #1a1d3a;
+  --fg-muted: #5b6478;
+  --accent: #6c5ce7;
+  --accent-soft: #a5b4fc;
+  --accent-bg: #eef0ff;
+  --border: #e5e7eb;
+}
+
 *,
 *::before,
 *::after {
@@ -11,10 +23,15 @@ body {
   min-height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+}
+
 body {
   font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  background: #0a0a0a;
-  color: #f5f4ef;
+  background: var(--bg);
+  color: var(--fg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -33,100 +50,277 @@ a {
 }
 
 ::selection {
-  background: #d9ff3d;
-  color: #0a0a0a;
+  background: var(--accent);
+  color: #fff;
 }
 
-@keyframes tickerScroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+/* ──────────────────────────────────────────────
+   Layout primitives — mobile-first
+   ────────────────────────────────────────────── */
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
-/* ────────────────────────────────────────────
-   Responsive layer.
-   Inline styles set the desktop baseline; these
-   rules override layout-sensitive bits at
-   smaller viewports. !important is intentional —
-   we are overriding inline styles.
-   ──────────────────────────────────────────── */
-
-/* DisplayHeadline owns its font-size purely via CSS
-   so the 128px max doesn't trigger break-word in the
-   split-column hero on wide desktops. */
-.dfy-display-h1 {
-  font-size: clamp(44px, 6vw, 96px);
+@media (min-width: 768px) {
+  .container {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
 }
 
-/* < 900px: tablet / mobile */
-@media (max-width: 900px) {
-  .dfy-display-h1 {
-    font-size: clamp(48px, 12vw, 76px);
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 48px;
+    padding-right: 48px;
+    max-width: 1280px;
   }
-  .dfy-qframe-h1 {
-    font-size: clamp(30px, 7vw, 44px) !important;
-  }
-  .dfy-page-h1 {
-    font-size: clamp(36px, 10vw, 64px) !important;
-  }
+}
 
+.section {
+  padding-top: 56px;
+  padding-bottom: 56px;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-top: 88px;
+    padding-bottom: 88px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding-top: 120px;
+    padding-bottom: 120px;
+  }
+}
+
+.section-tight {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+@media (min-width: 1024px) {
+  .section-tight {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   Display headlines (responsive)
+   ────────────────────────────────────────────── */
+
+.h-hero {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  color: var(--fg);
+  font-size: clamp(36px, 8vw, 60px);
+}
+
+@media (min-width: 1024px) {
+  .h-hero {
+    font-size: clamp(56px, 5.5vw, 84px);
+  }
+}
+
+.h-section {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  color: var(--fg);
+  font-size: clamp(30px, 6vw, 44px);
+}
+
+@media (min-width: 1024px) {
+  .h-section {
+    font-size: clamp(40px, 4vw, 56px);
+  }
+}
+
+.h-card {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: var(--fg);
+  font-size: clamp(18px, 2.5vw, 22px);
+}
+
+.t-lead {
+  font-size: clamp(16px, 2vw, 18px);
+  line-height: 1.55;
+  color: var(--fg-muted);
+}
+
+@media (min-width: 1024px) {
+  .t-lead {
+    font-size: 19px;
+  }
+}
+
+.t-eyebrow {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.t-eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  display: inline-block;
+}
+
+/* ──────────────────────────────────────────────
+   Section-specific responsive layouts
+   ────────────────────────────────────────────── */
+
+/* Nav links — hidden by default, shown at tablet+ */
+.dfy-nav-links {
+  display: none !important;
+}
+@media (min-width: 768px) {
+  .dfy-nav-links {
+    display: flex !important;
+  }
+}
+
+/* Hero grid */
+.dfy-hero-grid {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 1024px) {
   .dfy-hero-grid {
-    grid-template-columns: 1fr !important;
-    padding: 32px 20px 0 !important;
-    gap: 32px !important;
-    align-items: start !important;
-  }
-  .dfy-kpi-section {
-    padding: 32px 20px 0 !important;
-  }
-  .dfy-kpi-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .dfy-kpi-row {
-    border-left: none !important;
-    padding: 24px 4px !important;
-  }
-  .dfy-kpi-row + .dfy-kpi-row {
-    border-top: 1px solid rgba(245, 244, 239, 0.12) !important;
-  }
-  .dfy-contact-card {
-    padding: 24px 20px !important;
-  }
-  .dfy-contact-name-row {
-    grid-template-columns: 1fr !important;
-  }
-  .dfy-topbar {
-    padding: 14px 18px !important;
-  }
-  .dfy-qframe {
-    padding: 24px 20px 0 !important;
-  }
-  .dfy-qframe-actions {
-    padding: 32px 0 40px !important;
-  }
-  .dfy-q2-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .dfy-page-section {
-    padding: 48px 20px !important;
-  }
-  .dfy-reason-card {
-    padding: 24px 20px !important;
-  }
-  .dfy-calendly {
-    height: 640px !important;
-    min-width: 0 !important;
+    grid-template-columns: 1.1fr 1fr;
   }
 }
 
-/* < 480px: phones, tighter still */
-@media (max-width: 480px) {
-  .dfy-topbar-status {
-    font-size: 10px !important;
-    letter-spacing: 0.08em !important;
+.dfy-hero-visual {
+  min-height: 320px;
+}
+
+/* Trust strip grid */
+.dfy-trust-grid {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .dfy-trust-grid {
+    grid-template-columns: 220px 1fr;
   }
-  .dfy-btn {
-    padding: 14px 18px !important;
-    font-size: 12px !important;
-    letter-spacing: 0.06em !important;
+}
+
+/* Bento — mobile single column, tablet 2-col, desktop 3+1 */
+@media (min-width: 768px) {
+  .dfy-bento {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .dfy-bento-wide {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 1024px) {
+  .dfy-bento {
+    grid-template-columns: 1fr 1fr 1fr !important;
+  }
+  .dfy-bento-wide {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Stats grid */
+@media (min-width: 640px) {
+  .dfy-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+@media (min-width: 1024px) {
+  .dfy-stats-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  /* Staggered vertical offset on desktop */
+  .dfy-stats-grid > :nth-child(2),
+  .dfy-stats-grid > :nth-child(4) {
+    transform: translateY(28px);
+  }
+}
+
+/* Testimonials grid */
+@media (min-width: 768px) {
+  .dfy-testimonial-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+@media (min-width: 1024px) {
+  .dfy-testimonial-grid {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    grid-auto-flow: dense;
+  }
+  .dfy-testimonial-big {
+    grid-column: span 2 !important;
+  }
+}
+
+/* Footer */
+@media (min-width: 768px) {
+  .dfy-footer-grid {
+    grid-template-columns: 2fr 1fr 1fr !important;
+  }
+}
+
+/* Form card (used on /apply) */
+.dfy-form-card {
+  padding: 28px 24px;
+}
+@media (min-width: 640px) {
+  .dfy-form-card {
+    padding: 40px 36px;
+  }
+}
+
+.dfy-form-name-row {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .dfy-form-name-row {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+.dfy-q-options-grid {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .dfy-q-options-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   Reduced motion
+   ────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

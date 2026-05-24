@@ -1,103 +1,273 @@
 'use client';
 
 import type { CSSProperties, ReactNode } from 'react';
+import { motion, type Variants } from 'framer-motion';
 import { theme } from '@/lib/theme';
+import { fadeUp, fadeUpSmall, inViewProps, stagger } from '@/lib/motion';
 
-const STUDIO_RADIUS = theme.direction === 'studio';
+// ───────── Container & Section helpers ─────────
+// Just thin semantic wrappers around the .container / .section classes from globals.css
 
-// ───────── Eyebrow ─────────
-export function Eyebrow({ children, style }: { children: ReactNode; style?: CSSProperties }) {
+export function Container({ children, className = '', style }: { children: ReactNode; className?: string; style?: CSSProperties }) {
   return (
-    <div
-      style={{
-        fontFamily: theme.fonts.mono,
-        fontSize: 11,
-        letterSpacing: '0.16em',
-        textTransform: 'uppercase',
-        color: theme.palette.muted,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 8,
-        ...style,
-      }}
-    >
-      <span
-        style={{
-          width: 6,
-          height: 6,
-          borderRadius: 99,
-          background: theme.palette.accent,
-          display: 'inline-block',
-        }}
-      />
+    <div className={`container ${className}`} style={style}>
       {children}
     </div>
   );
 }
 
-// ───────── Btn ─────────
-export function Btn({
+export function Section({
+  children,
+  id,
+  tight,
+  className = '',
+  style,
+}: {
+  children: ReactNode;
+  id?: string;
+  tight?: boolean;
+  className?: string;
+  style?: CSSProperties;
+}) {
+  return (
+    <section id={id} className={`${tight ? 'section-tight' : 'section'} ${className}`} style={style}>
+      {children}
+    </section>
+  );
+}
+
+// ───────── Eyebrow ─────────
+export function Eyebrow({ children, style }: { children: ReactNode; style?: CSSProperties }) {
+  return (
+    <span className="t-eyebrow" style={style}>
+      {children}
+    </span>
+  );
+}
+
+// ───────── Button ─────────
+type ButtonVariant = 'primary' | 'dark' | 'ghost';
+type ButtonSize = 'md' | 'lg';
+
+export function Button({
   children,
   onClick,
   disabled,
   variant = 'primary',
+  size = 'md',
+  href,
+  type = 'button',
   style,
   full,
-  type = 'button',
 }: {
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
-  variant?: 'primary' | 'ghost';
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  href?: string;
+  type?: 'button' | 'submit';
   style?: CSSProperties;
   full?: boolean;
-  type?: 'button' | 'submit';
 }) {
-  const isPrimary = variant === 'primary';
+  const bg =
+    variant === 'primary'
+      ? theme.palette.accent
+      : variant === 'dark'
+        ? theme.palette.dark
+        : 'transparent';
+  const color =
+    variant === 'ghost' ? theme.palette.fg : theme.palette.onAccent;
+  const border =
+    variant === 'ghost' ? `1px solid ${theme.palette.border}` : 'none';
+  const padding = size === 'lg' ? '18px 32px' : '14px 24px';
+  const fontSize = size === 'lg' ? 16 : 15;
+
+  const base: CSSProperties = {
+    appearance: 'none',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    background: bg,
+    color,
+    border,
+    padding,
+    fontFamily: theme.fonts.body,
+    fontSize,
+    fontWeight: 600,
+    letterSpacing: '-0.005em',
+    borderRadius: theme.radius.pill,
+    opacity: disabled ? 0.45 : 1,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    width: full ? '100%' : 'auto',
+    boxShadow:
+      variant === 'primary'
+        ? '0 4px 14px rgba(108, 92, 231, 0.28)'
+        : variant === 'dark'
+          ? '0 4px 14px rgba(26, 29, 58, 0.18)'
+          : 'none',
+    ...style,
+  };
+
+  const Comp = href ? motion.a : motion.button;
   return (
-    <button
-      className="dfy-btn"
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      style={{
-        appearance: 'none',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        background: isPrimary ? theme.palette.accent : 'transparent',
-        color: isPrimary ? theme.palette.onAccent : theme.palette.fg,
-        padding: '18px 28px',
-        fontFamily: theme.fonts.mono,
-        fontSize: 13,
-        letterSpacing: '0.08em',
-        textTransform: 'uppercase',
-        fontWeight: 600,
-        borderRadius: STUDIO_RADIUS ? 999 : 4,
-        border: isPrimary ? 'none' : `1px solid ${theme.palette.border}`,
-        opacity: disabled ? 0.35 : 1,
-        transition: 'transform .15s ease, background .2s ease, opacity .2s ease',
-        width: full ? '100%' : 'auto',
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 10,
-        ...style,
-      }}
-      onMouseDown={(e) => {
-        if (!disabled) e.currentTarget.style.transform = 'scale(0.985)';
-      }}
-      onMouseUp={(e) => {
-        e.currentTarget.style.transform = 'scale(1)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'scale(1)';
-      }}
+    <Comp
+      {...(href ? { href } : { type, onClick, disabled })}
+      whileHover={disabled ? undefined : { scale: 1.025 }}
+      whileTap={disabled ? undefined : { scale: 0.98 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+      style={base}
     >
       {children}
-    </button>
+    </Comp>
   );
 }
 
-// ───────── Field ─────────
+// ───────── Card ─────────
+export function Card({
+  children,
+  style,
+  hoverable,
+  accent,
+  className,
+}: {
+  children: ReactNode;
+  style?: CSSProperties;
+  hoverable?: boolean;
+  accent?: boolean; // adds accent-tinted gradient corner
+  className?: string;
+}) {
+  return (
+    <motion.div
+      whileHover={hoverable ? { y: -2, boxShadow: theme.shadow.cardHover } : undefined}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      className={className}
+      style={{
+        background: accent
+          ? `linear-gradient(135deg, ${theme.palette.surface} 0%, ${theme.palette.accentBg} 100%)`
+          : theme.palette.surface,
+        border: `1px solid ${theme.palette.borderSoft}`,
+        borderRadius: theme.radius.xl,
+        boxShadow: theme.shadow.card,
+        padding: 24,
+        ...style,
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// ───────── ScrollReveal ─────────
+// Wrap any block; fades + slides in on scroll-into-view.
+export function ScrollReveal({
+  children,
+  variants = fadeUp,
+  className,
+  style,
+  as = 'div',
+}: {
+  children: ReactNode;
+  variants?: Variants;
+  className?: string;
+  style?: CSSProperties;
+  as?: 'div' | 'section' | 'header';
+}) {
+  const Comp = as === 'section' ? motion.section : as === 'header' ? motion.header : motion.div;
+  return (
+    <Comp
+      {...inViewProps}
+      variants={variants}
+      className={className}
+      style={style}
+    >
+      {children}
+    </Comp>
+  );
+}
+
+// Stagger container — children should use fadeUp (or similar) for cascade reveal.
+export function ScrollStagger({
+  children,
+  className,
+  style,
+  variants = stagger,
+}: {
+  children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+  variants?: Variants;
+}) {
+  return (
+    <motion.div
+      {...inViewProps}
+      variants={variants}
+      className={className}
+      style={style}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+export function StaggerItem({
+  children,
+  className,
+  style,
+  variants = fadeUpSmall,
+}: {
+  children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+  variants?: Variants;
+}) {
+  return (
+    <motion.div variants={variants} className={className} style={style}>
+      {children}
+    </motion.div>
+  );
+}
+
+// ───────── SectionTitle (centered eyebrow + h2 + sub) ─────────
+export function SectionTitle({
+  eyebrow,
+  title,
+  subtitle,
+  align = 'center',
+}: {
+  eyebrow?: string;
+  title: ReactNode;
+  subtitle?: ReactNode;
+  align?: 'center' | 'left';
+}) {
+  return (
+    <ScrollReveal
+      style={{
+        textAlign: align,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: align === 'center' ? 'center' : 'flex-start',
+        gap: 16,
+        maxWidth: align === 'center' ? 720 : 'none',
+        marginLeft: align === 'center' ? 'auto' : 0,
+        marginRight: align === 'center' ? 'auto' : 0,
+      }}
+    >
+      {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+      <h2 className="h-section" style={{ margin: 0 }}>
+        {title}
+      </h2>
+      {subtitle && (
+        <p className="t-lead" style={{ margin: 0, maxWidth: 560 }}>
+          {subtitle}
+        </p>
+      )}
+    </ScrollReveal>
+  );
+}
+
+// ───────── Field (form input) ─────────
 export function Field({
   label,
   value,
@@ -123,15 +293,20 @@ export function Field({
     <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       <span
         style={{
-          fontFamily: theme.fonts.mono,
-          fontSize: 10,
-          letterSpacing: '0.16em',
-          textTransform: 'uppercase',
-          color: theme.palette.muted,
+          fontFamily: theme.fonts.body,
+          fontSize: 13,
+          fontWeight: 600,
+          letterSpacing: '0.01em',
+          color: theme.palette.fg,
         }}
       >
         {label}
-        {optional && <span style={{ opacity: 0.5 }}> · optional</span>}
+        {optional && (
+          <span style={{ color: theme.palette.fgSubtle, fontWeight: 500 }}>
+            {' '}
+            · optional
+          </span>
+        )}
       </span>
       <input
         type={type}
@@ -143,24 +318,30 @@ export function Field({
         required={required}
         style={{
           appearance: 'none',
-          background: 'transparent',
-          border: 'none',
-          borderBottom: `1px solid ${theme.palette.border}`,
-          padding: '12px 0',
-          fontSize: 18,
+          background: theme.palette.surface,
+          border: `1px solid ${theme.palette.border}`,
+          borderRadius: theme.radius.md,
+          padding: '14px 16px',
+          fontSize: 16,
           fontFamily: theme.fonts.body,
           color: theme.palette.fg,
           outline: 'none',
-          transition: 'border-color .2s',
+          transition: 'border-color .15s, box-shadow .15s',
         }}
-        onFocus={(e) => (e.currentTarget.style.borderBottomColor = theme.palette.accent)}
-        onBlur={(e) => (e.currentTarget.style.borderBottomColor = theme.palette.border)}
+        onFocus={(e) => {
+          e.currentTarget.style.borderColor = theme.palette.accent;
+          e.currentTarget.style.boxShadow = `0 0 0 4px ${theme.palette.accentBg}`;
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.borderColor = theme.palette.border;
+          e.currentTarget.style.boxShadow = 'none';
+        }}
       />
     </label>
   );
 }
 
-// ───────── OptionCard ─────────
+// ───────── OptionCard (question option) ─────────
 export function OptionCard({
   selected,
   onClick,
@@ -177,46 +358,52 @@ export function OptionCard({
   multi?: boolean;
 }) {
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onClick}
+      whileHover={{ y: -1 }}
+      whileTap={{ scale: 0.995 }}
+      transition={{ duration: 0.15 }}
       style={{
         appearance: 'none',
         textAlign: 'left',
         cursor: 'pointer',
-        background: selected ? theme.palette.accent : theme.palette.surface,
-        color: selected ? theme.palette.onAccent : theme.palette.fg,
-        border: `1px solid ${selected ? theme.palette.accent : theme.palette.border}`,
-        borderRadius: STUDIO_RADIUS ? 12 : 6,
-        padding: '20px 22px',
+        background: selected ? theme.palette.accentBg : theme.palette.surface,
+        color: theme.palette.fg,
+        border: `1.5px solid ${selected ? theme.palette.accent : theme.palette.border}`,
+        borderRadius: theme.radius.lg,
+        padding: '18px 20px',
         fontFamily: theme.fonts.body,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 14,
-        transition: 'all .15s ease',
         width: '100%',
-      }}
-      onMouseEnter={(e) => {
-        if (!selected) e.currentTarget.style.borderColor = theme.palette.fg + '55';
-      }}
-      onMouseLeave={(e) => {
-        if (!selected) e.currentTarget.style.borderColor = theme.palette.border;
+        boxShadow: selected ? `0 0 0 4px ${theme.palette.accentBg}` : 'none',
+        transition: 'background .15s, border-color .15s, box-shadow .15s',
       }}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-        <span style={{ fontSize: 18, fontWeight: 500, letterSpacing: '-0.01em' }}>{label}</span>
-        {sub && <span style={{ fontSize: 13, opacity: 0.7 }}>{sub}</span>}
+        <span style={{ fontSize: 16, fontWeight: 600, letterSpacing: '-0.01em' }}>
+          {label}
+        </span>
+        {sub && (
+          <span style={{ fontSize: 14, color: theme.palette.fgMuted }}>{sub}</span>
+        )}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         {badge && (
           <span
             style={{
-              fontFamily: theme.fonts.mono,
+              fontFamily: theme.fonts.body,
               fontSize: 10,
-              letterSpacing: '0.12em',
+              fontWeight: 600,
+              letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              opacity: 0.6,
+              color: theme.palette.fgMuted,
+              padding: '4px 8px',
+              borderRadius: theme.radius.sm,
+              background: theme.palette.bgSubtle,
             }}
           >
             {badge}
@@ -226,9 +413,9 @@ export function OptionCard({
           style={{
             width: 22,
             height: 22,
-            borderRadius: multi ? 4 : 99,
-            border: `1.5px solid ${selected ? theme.palette.onAccent : theme.palette.border}`,
-            background: selected ? theme.palette.onAccent : 'transparent',
+            borderRadius: multi ? 6 : 999,
+            border: `1.5px solid ${selected ? theme.palette.accent : theme.palette.border}`,
+            background: selected ? theme.palette.accent : 'transparent',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -236,18 +423,19 @@ export function OptionCard({
           }}
         >
           {selected && (
-            <span
-              style={{
-                width: multi ? 10 : 8,
-                height: multi ? 10 : 8,
-                background: theme.palette.accent,
-                borderRadius: multi ? 2 : 99,
-              }}
-            />
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path
+                d="M2.5 6L5 8.5L9.5 4"
+                stroke="#fff"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           )}
         </span>
       </div>
-    </button>
+    </motion.button>
   );
 }
 
@@ -257,11 +445,12 @@ export function ProgressBar({ step, total }: { step: number; total: number }) {
     <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
       <span
         style={{
-          fontFamily: theme.fonts.mono,
-          fontSize: 11,
-          letterSpacing: '0.14em',
+          fontFamily: theme.fonts.body,
+          fontSize: 12,
+          fontWeight: 600,
+          letterSpacing: '0.12em',
           textTransform: 'uppercase',
-          color: theme.palette.muted,
+          color: theme.palette.fgMuted,
         }}
       >
         Step {String(step).padStart(2, '0')} / {String(total).padStart(2, '0')}
@@ -269,19 +458,22 @@ export function ProgressBar({ step, total }: { step: number; total: number }) {
       <div
         style={{
           flex: 1,
-          height: 2,
-          background: theme.palette.border,
+          height: 4,
+          background: theme.palette.bgSubtle,
+          borderRadius: 999,
           position: 'relative',
           overflow: 'hidden',
         }}
       >
-        <div
+        <motion.div
+          initial={false}
+          animate={{ width: `${(step / total) * 100}%` }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           style={{
             position: 'absolute',
             inset: 0,
-            width: `${(step / total) * 100}%`,
             background: theme.palette.accent,
-            transition: 'width .4s cubic-bezier(.4,0,.2,1)',
+            borderRadius: 999,
           }}
         />
       </div>
@@ -289,295 +481,84 @@ export function ProgressBar({ step, total }: { step: number; total: number }) {
   );
 }
 
-// ───────── DisplayHeadline ─────────
-export function DisplayHeadline({
-  eyebrow,
-  big,
-  accent,
-  sub,
-  align = 'left',
-}: {
-  eyebrow: string;
-  big: string;
-  accent: string;
-  sub?: string;
-  align?: 'left' | 'center';
-}) {
-  const f = theme.fonts;
-  return (
-    <div style={{ textAlign: align, display: 'flex', flexDirection: 'column', gap: 24 }}>
-      <Eyebrow style={{ justifyContent: align === 'center' ? 'center' : 'flex-start' }}>
-        {eyebrow}
-      </Eyebrow>
-      <h1
-        className="dfy-display-h1"
-        style={{
-          margin: 0,
-          fontFamily: f.display,
-          fontWeight: f.weight,
-          lineHeight: 0.92,
-          letterSpacing: f.tracking,
-          color: theme.palette.fg,
-          overflowWrap: 'break-word',
-        }}
-      >
-        {big}
-        <br />
-        <span
-          style={{
-            color: theme.palette.accent,
-            fontStyle: f.italic ? 'italic' : 'normal',
-          }}
-        >
-          {accent}
-        </span>
-      </h1>
-      {sub && (
-        <p
-          style={{
-            margin: 0,
-            fontSize: 'clamp(16px, 1.4vw, 20px)',
-            lineHeight: 1.5,
-            color: theme.palette.muted,
-            maxWidth: 560,
-            marginLeft: align === 'center' ? 'auto' : 0,
-            marginRight: align === 'center' ? 'auto' : 0,
-          }}
-        >
-          {sub}
-        </p>
-      )}
-    </div>
-  );
-}
-
-// ───────── TopBar ─────────
-export function TopBar() {
+// ───────── StepCircle (big purple numbered circle) ─────────
+export function StepCircle({ n }: { n: number | string }) {
   return (
     <div
-      className="dfy-topbar"
       style={{
-        display: 'flex',
+        width: 52,
+        height: 52,
+        flexShrink: 0,
+        borderRadius: 999,
+        background: theme.palette.accent,
+        color: theme.palette.onAccent,
+        display: 'inline-flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '20px 32px',
-        borderBottom: `1px solid ${theme.palette.border}`,
-        position: 'sticky',
-        top: 0,
-        zIndex: 10,
-        background: theme.palette.bg + 'ee',
-        backdropFilter: 'blur(12px)',
+        justifyContent: 'center',
+        fontFamily: theme.fonts.display,
+        fontWeight: 700,
+        fontSize: 18,
+        letterSpacing: '-0.01em',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div
-          style={{
-            width: 22,
-            height: 22,
-            background: theme.palette.accent,
-            borderRadius: STUDIO_RADIUS ? 99 : 4,
-          }}
-        />
-        <span
-          style={{
-            fontFamily: theme.fonts.mono,
-            fontSize: 12,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            fontWeight: 600,
-          }}
-        >
-          DFY / Content
-        </span>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-        <span
-          className="dfy-topbar-status"
-          style={{
-            fontFamily: theme.fonts.mono,
-            fontSize: 11,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: theme.palette.muted,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-          }}
-        >
-          <span
-            style={{
-              width: 7,
-              height: 7,
-              borderRadius: 99,
-              background: '#34d399',
-              boxShadow: '0 0 0 4px rgba(52,211,153,0.18)',
-            }}
-          />
-          3 spots left this month
-        </span>
-      </div>
+      {String(n).padStart(2, '0')}
     </div>
   );
 }
 
-// ───────── Ticker ─────────
-export function Ticker() {
-  const items = ['NO CAMERA', 'NO EDITING', 'NO SCRIPTS', 'NO EXCUSES', 'JUST POSTING', '—'];
-  const row = [...items, ...items, ...items, ...items];
-  return (
-    <div
-      style={{
-        borderTop: `1px solid ${theme.palette.border}`,
-        borderBottom: `1px solid ${theme.palette.border}`,
-        overflow: 'hidden',
-        padding: '14px 0',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          gap: 48,
-          whiteSpace: 'nowrap',
-          animation: 'tickerScroll 36s linear infinite',
-          fontFamily: theme.fonts.mono,
-          fontSize: 13,
-          letterSpacing: '0.18em',
-          textTransform: 'uppercase',
-          color: theme.palette.fg,
-        }}
-      >
-        {row.map((it, i) => (
-          <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 48 }}>
-            {it}
-            <span style={{ color: theme.palette.accent }}>●</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ───────── KPIRow ─────────
-export function KPIRow({ n, l, border }: { n: string; l: string; border?: boolean }) {
-  return (
-    <div
-      className="dfy-kpi-row"
-      style={{
-        padding: '32px 28px',
-        borderLeft: border ? `1px solid ${theme.palette.border}` : 'none',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 8,
-      }}
-    >
-      <span
-        style={{
-          fontFamily: theme.fonts.display,
-          fontSize: 'clamp(48px, 5vw, 72px)',
-          fontWeight: theme.fonts.weight,
-          letterSpacing: theme.fonts.tracking,
-          lineHeight: 0.9,
-          color: theme.palette.fg,
-        }}
-      >
-        {n}
-      </span>
-      <span
-        style={{
-          fontFamily: theme.fonts.body,
-          fontSize: 14,
-          color: theme.palette.muted,
-          maxWidth: 240,
-        }}
-      >
-        {l}
-      </span>
-    </div>
-  );
-}
-
-// ───────── QuestionFrame ─────────
-export function QuestionFrame({
-  step,
-  total,
-  eyebrow,
-  question,
-  hint,
-  children,
-  onBack,
-  onNext,
-  canNext,
-  nextLabel = 'Continue',
-  nextDisabledLabel,
-  submitting,
+// ───────── PillTag (used for floating hero tags) ─────────
+export function PillTag({
+  label,
+  dotColor = theme.palette.accent,
+  style,
 }: {
-  step: number;
-  total: number;
-  eyebrow: string;
-  question: string;
-  hint?: string;
-  children: ReactNode;
-  onBack: () => void;
-  onNext: () => void;
-  canNext: boolean;
-  nextLabel?: string;
-  nextDisabledLabel?: string;
-  submitting?: boolean;
+  label: string;
+  dotColor?: string;
+  style?: CSSProperties;
 }) {
   return (
     <div
-      className="dfy-qframe"
       style={{
-        padding: '32px 48px 0',
-        maxWidth: 920,
-        width: '100%',
-        margin: '0 auto',
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 8,
+        padding: '10px 18px',
+        background: theme.palette.surface,
+        border: `1px solid ${theme.palette.borderSoft}`,
+        borderRadius: theme.radius.pill,
+        boxShadow: theme.shadow.md,
+        fontFamily: theme.fonts.body,
+        fontSize: 14,
+        fontWeight: 600,
+        color: theme.palette.fg,
+        whiteSpace: 'nowrap',
+        ...style,
       }}
     >
-      <ProgressBar step={step} total={total} />
-      <div style={{ marginTop: 56, display: 'flex', flexDirection: 'column', gap: 28, flex: 1 }}>
-        <Eyebrow>{eyebrow}</Eyebrow>
-        <h1
-          className="dfy-qframe-h1"
-          style={{
-            margin: 0,
-            fontFamily: theme.fonts.display,
-            fontSize: 'clamp(36px, 5vw, 64px)',
-            fontWeight: theme.fonts.weight,
-            letterSpacing: theme.fonts.tracking,
-            lineHeight: 1.02,
-            color: theme.palette.fg,
-          }}
-        >
-          {question}
-        </h1>
-        {hint && (
-          <p style={{ margin: 0, color: theme.palette.muted, fontSize: 17, maxWidth: 620 }}>{hint}</p>
-        )}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
-          {children}
-        </div>
-      </div>
-      <div
-        className="dfy-qframe-actions"
+      <span
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '48px 0 56px',
-          gap: 16,
+          width: 8,
+          height: 8,
+          borderRadius: 999,
+          background: dotColor,
         }}
-      >
-        <Btn variant="ghost" onClick={onBack}>
-          ← Back
-        </Btn>
-        <Btn onClick={onNext} disabled={!canNext || submitting}>
-          {submitting ? (nextDisabledLabel ?? 'Submitting…') : `${nextLabel}  →`}
-        </Btn>
-      </div>
+      />
+      {label}
     </div>
+  );
+}
+
+// ───────── Star (testimonial ratings) ─────────
+export function Star({ filled = true, size = 14 }: { filled?: boolean; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+      <path
+        d="M8 1.5l2.06 4.18 4.61.67-3.34 3.25.79 4.59L8 12.04l-4.12 2.16.79-4.59L1.33 6.36l4.61-.67L8 1.5z"
+        fill={filled ? theme.palette.accent : 'none'}
+        stroke={theme.palette.accent}
+        strokeWidth="1.2"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

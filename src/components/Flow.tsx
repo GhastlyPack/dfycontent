@@ -2,21 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { AnimatePresence, motion } from 'framer-motion';
 import { theme } from '@/lib/theme';
 import type { Budget, Content, Issue, Setup } from '@/lib/types';
 import {
-  Btn,
-  DisplayHeadline,
+  Button,
+  Container,
   Eyebrow,
   Field,
-  KPIRow,
   OptionCard,
-  QuestionFrame,
-  Ticker,
-  TopBar,
+  ProgressBar,
+  Section,
 } from '@/components/atoms';
 
-type Screen = 'hero' | 'q1' | 'q2' | 'q3' | 'q4';
+type Screen = 'contact' | 'q1' | 'q2' | 'q3' | 'q4';
 
 type Contact = {
   firstName?: string;
@@ -37,13 +36,12 @@ const STORAGE_KEY = 'dfy.flow';
 
 export function Flow() {
   const router = useRouter();
-  const [screen, setScreen] = useState<Screen>('hero');
+  const [screen, setScreen] = useState<Screen>('contact');
   const [contact, setContact] = useState<Contact>({});
   const [answers, setAnswers] = useState<Answers>({ issues: [] });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Hydrate from sessionStorage on mount
   useEffect(() => {
     try {
       const raw = sessionStorage.getItem(STORAGE_KEY);
@@ -61,7 +59,6 @@ export function Flow() {
     }
   }, []);
 
-  // Persist on change
   useEffect(() => {
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ screen, contact, answers }));
@@ -70,8 +67,12 @@ export function Flow() {
     }
   }, [screen, contact, answers]);
 
-  function go(next: Screen) {
+  function go(next: Screen | null) {
     setError(null);
+    if (next === null) {
+      router.push('/');
+      return;
+    }
     setScreen(next);
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'instant' });
   }
@@ -158,282 +159,305 @@ export function Flow() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <TopBar />
-      {screen === 'hero' && (
-        <HeroBody
-          contact={contact}
-          patchContact={patchContact}
-          submitContact={submitContact}
-          submitting={submitting}
-          error={error}
-        />
-      )}
-      {screen === 'q1' && (
-        <Q1
-          value={answers.content}
-          setValue={(v) => setAnswers((a) => ({ ...a, content: v }))}
-          go={go}
-        />
-      )}
-      {screen === 'q2' && (
-        <Q2
-          values={answers.issues}
-          setValues={(vs) => setAnswers((a) => ({ ...a, issues: vs }))}
-          go={go}
-        />
-      )}
-      {screen === 'q3' && (
-        <Q3
-          value={answers.budget}
-          setValue={(v) => setAnswers((a) => ({ ...a, budget: v }))}
-          go={go}
-        />
-      )}
-      {screen === 'q4' && (
-        <Q4
-          value={answers.setup}
-          setValue={(v) => setAnswers((a) => ({ ...a, setup: v }))}
-          go={go}
-          submit={submitFinal}
-          submitting={submitting}
-          error={error}
-        />
-      )}
+    <Section>
+      <Container>
+        <div style={{ maxWidth: 640, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
+          <AnimatePresence mode="wait">
+            {screen === 'contact' && (
+              <ScreenWrap key="contact">
+                <ContactStep
+                  contact={contact}
+                  patchContact={patchContact}
+                  submit={submitContact}
+                  submitting={submitting}
+                  error={error}
+                  onBack={() => go(null)}
+                />
+              </ScreenWrap>
+            )}
+            {screen === 'q1' && (
+              <ScreenWrap key="q1">
+                <Q1
+                  value={answers.content}
+                  setValue={(v) => setAnswers((a) => ({ ...a, content: v }))}
+                  go={go}
+                />
+              </ScreenWrap>
+            )}
+            {screen === 'q2' && (
+              <ScreenWrap key="q2">
+                <Q2
+                  values={answers.issues}
+                  setValues={(vs) => setAnswers((a) => ({ ...a, issues: vs }))}
+                  go={go}
+                />
+              </ScreenWrap>
+            )}
+            {screen === 'q3' && (
+              <ScreenWrap key="q3">
+                <Q3
+                  value={answers.budget}
+                  setValue={(v) => setAnswers((a) => ({ ...a, budget: v }))}
+                  go={go}
+                />
+              </ScreenWrap>
+            )}
+            {screen === 'q4' && (
+              <ScreenWrap key="q4">
+                <Q4
+                  value={answers.setup}
+                  setValue={(v) => setAnswers((a) => ({ ...a, setup: v }))}
+                  submit={submitFinal}
+                  submitting={submitting}
+                  error={error}
+                  go={go}
+                />
+              </ScreenWrap>
+            )}
+          </AnimatePresence>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+function ScreenWrap({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function FormCard({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="dfy-form-card"
+      style={{
+        background: theme.palette.surface,
+        border: `1px solid ${theme.palette.borderSoft}`,
+        borderRadius: theme.radius.xxl,
+        boxShadow: theme.shadow.card,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 24,
+      }}
+    >
+      {children}
     </div>
   );
 }
 
-// ───────── Hero ─────────
-function HeroBody({
+// ───────── Steps ─────────
+
+function ContactStep({
   contact,
   patchContact,
-  submitContact,
+  submit,
   submitting,
   error,
+  onBack,
 }: {
   contact: Contact;
   patchContact: (k: keyof Contact, v: string) => void;
-  submitContact: () => void;
+  submit: () => void;
   submitting: boolean;
   error: string | null;
+  onBack: () => void;
 }) {
-  const valid = !!(contact.firstName && contact.lastName && contact.email && contact.phone);
-  const isSplit = theme.heroLayout === 'split';
-
   return (
     <>
-      <div
-        className="dfy-hero-grid"
-        style={{
-          flex: 1,
-          display: 'grid',
-          gridTemplateColumns: isSplit ? 'minmax(0, 1.15fr) minmax(320px, 1fr)' : '1fr',
-          gap: isSplit ? 48 : 64,
-          padding: isSplit ? '64px 48px 0' : '88px 48px 0',
-          maxWidth: 1440,
-          width: '100%',
-          margin: '0 auto',
-          alignItems: isSplit ? 'center' : 'start',
-        }}
-      >
-        <div
-          style={{
-            textAlign: isSplit ? 'left' : 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 32,
-            minWidth: 0,
-          }}
-        >
-          <DisplayHeadline
-            eyebrow={theme.headline.eyebrow}
-            big={theme.headline.big}
-            accent={theme.headline.accent}
-            sub={theme.headline.sub}
-            align={isSplit ? 'left' : 'center'}
-          />
-        </div>
-
-        <ContactCard
-          contact={contact}
-          patchContact={patchContact}
-          valid={valid}
-          submitting={submitting}
-          onSubmit={submitContact}
-          error={error}
-        />
+      <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+        <Eyebrow>60-second qualification</Eyebrow>
+        <h1 className="h-section" style={{ margin: 0 }}>
+          Let&apos;s see if we&apos;re a fit.
+        </h1>
+        <p className="t-lead" style={{ margin: 0, maxWidth: 480 }}>
+          Tell us a bit about yourself — we&apos;ll route you to the team if there&apos;s a match.
+        </p>
       </div>
 
-      {isSplit && (
-        <div
-          className="dfy-kpi-section"
-          style={{
-            padding: '64px 48px 0',
-            maxWidth: 1440,
-            margin: '0 auto',
-            width: '100%',
+      <FormCard>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            submit();
           }}
+          style={{ display: 'flex', flexDirection: 'column', gap: 18 }}
         >
-          <div
-            className="dfy-kpi-grid"
+          <div className="dfy-form-name-row" style={{ display: 'grid', gap: 16 }}>
+            <Field
+              label="First name"
+              value={contact.firstName}
+              onChange={(v) => patchContact('firstName', v)}
+              placeholder="Sam"
+              autoComplete="given-name"
+              autoFocus
+              required
+            />
+            <Field
+              label="Last name"
+              value={contact.lastName}
+              onChange={(v) => patchContact('lastName', v)}
+              placeholder="Reyes"
+              autoComplete="family-name"
+              required
+            />
+          </div>
+          <Field
+            label="Email"
+            type="email"
+            value={contact.email}
+            onChange={(v) => patchContact('email', v)}
+            placeholder="sam@company.com"
+            autoComplete="email"
+            required
+          />
+          <Field
+            label="Phone"
+            type="tel"
+            value={contact.phone}
+            onChange={(v) => patchContact('phone', v)}
+            placeholder="+1 (555) 123-4567"
+            autoComplete="tel"
+            required
+          />
+          <Field
+            label="Social handle"
+            value={contact.handle}
+            onChange={(v) => patchContact('handle', v)}
+            placeholder="@samreyes"
+            optional
+          />
+
+          <Button type="submit" full disabled={submitting} onClick={submit} size="lg">
+            {submitting ? 'Saving…' : 'Continue  →'}
+          </Button>
+
+          {error && (
+            <p
+              role="alert"
+              style={{
+                margin: 0,
+                fontSize: 13,
+                color: '#dc2626',
+                fontFamily: theme.fonts.body,
+                textAlign: 'center',
+              }}
+            >
+              {error}
+            </p>
+          )}
+          <p
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 0,
-              borderTop: `1px solid ${theme.palette.border}`,
-              borderBottom: `1px solid ${theme.palette.border}`,
+              margin: 0,
+              fontSize: 12,
+              color: theme.palette.fgSubtle,
+              textAlign: 'center',
+              fontFamily: theme.fonts.body,
             }}
           >
-            <KPIRow n="30+" l="pieces published / month, in your voice" />
-            <KPIRow n="0" l="hours you spend filming" border />
-            <KPIRow n="14" l="days from setup to first post" border />
-          </div>
-        </div>
-      )}
+            We won&apos;t spam you. We don&apos;t have time for that either.
+          </p>
+        </form>
+      </FormCard>
 
-      <Ticker />
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Button variant="ghost" onClick={onBack}>
+          ← Back to home
+        </Button>
+      </div>
     </>
   );
 }
 
-function ContactCard({
-  contact,
-  patchContact,
-  valid,
+function QuestionShell({
+  step,
+  total,
+  eyebrow,
+  question,
+  hint,
+  children,
+  onBack,
+  onNext,
+  canNext,
+  nextLabel = 'Continue',
   submitting,
-  onSubmit,
   error,
 }: {
-  contact: Contact;
-  patchContact: (k: keyof Contact, v: string) => void;
-  valid: boolean;
-  submitting: boolean;
-  onSubmit: () => void;
-  error: string | null;
+  step: number;
+  total: number;
+  eyebrow: string;
+  question: string;
+  hint?: string;
+  children: React.ReactNode;
+  onBack: () => void;
+  onNext: () => void;
+  canNext: boolean;
+  nextLabel?: string;
+  submitting?: boolean;
+  error?: string | null;
 }) {
   return (
-    <form
-      className="dfy-contact-card"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit();
-      }}
-      style={{
-        background: theme.palette.surface,
-        border: `1px solid ${theme.palette.border}`,
-        borderRadius: theme.direction === 'studio' ? 20 : 6,
-        padding: '36px 36px 32px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 20,
-        width: '100%',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-        <Eyebrow>60-second qualification</Eyebrow>
-        <span
-          style={{
-            fontFamily: theme.fonts.mono,
-            fontSize: 10,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: theme.palette.muted,
-          }}
-        >
-          4 questions
-        </span>
-      </div>
-      <h2
-        style={{
-          margin: 0,
-          fontFamily: theme.fonts.display,
-          fontSize: 28,
-          fontWeight: theme.fonts.weight,
-          letterSpacing: theme.fonts.tracking,
-          lineHeight: 1.05,
-        }}
-      >
-        Let&apos;s see if we&apos;re a fit.
-      </h2>
-      <div className="dfy-contact-name-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
-        <Field
-          label="First name"
-          value={contact.firstName}
-          onChange={(v) => patchContact('firstName', v)}
-          placeholder="Sam"
-          autoComplete="given-name"
-          autoFocus
-          required
-        />
-        <Field
-          label="Last name"
-          value={contact.lastName}
-          onChange={(v) => patchContact('lastName', v)}
-          placeholder="Reyes"
-          autoComplete="family-name"
-          required
-        />
-      </div>
-      <Field
-        label="Email"
-        type="email"
-        value={contact.email}
-        onChange={(v) => patchContact('email', v)}
-        placeholder="sam@company.com"
-        autoComplete="email"
-        required
-      />
-      <Field
-        label="Phone"
-        type="tel"
-        value={contact.phone}
-        onChange={(v) => patchContact('phone', v)}
-        placeholder="+1 (555) 123-4567"
-        autoComplete="tel"
-        required
-      />
-      <Field
-        label="Social handle"
-        value={contact.handle}
-        onChange={(v) => patchContact('handle', v)}
-        placeholder="@samreyes"
-        optional
-      />
+    <>
+      <ProgressBar step={step} total={total} />
 
-      <Btn type="submit" disabled={!valid || submitting} onClick={onSubmit} full>
-        {submitting ? 'Saving…' : 'Start qualifying  →'}
-      </Btn>
-      {error && (
-        <p
+      <FormCard>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <Eyebrow>{eyebrow}</Eyebrow>
+          <h2 className="h-section" style={{ margin: 0, fontSize: 'clamp(26px, 4vw, 36px)' }}>
+            {question}
+          </h2>
+          {hint && (
+            <p style={{ margin: 0, fontSize: 15, color: theme.palette.fgMuted, lineHeight: 1.55 }}>
+              {hint}
+            </p>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>{children}</div>
+
+        {error && (
+          <p
+            role="alert"
+            style={{
+              margin: 0,
+              fontSize: 13,
+              color: '#dc2626',
+              fontFamily: theme.fonts.body,
+            }}
+          >
+            {error}
+          </p>
+        )}
+
+        <div
           style={{
-            margin: 0,
-            fontSize: 13,
-            color: '#ff7a7a',
-            fontFamily: theme.fonts.body,
-            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 12,
+            paddingTop: 4,
           }}
-          role="alert"
         >
-          {error}
-        </p>
-      )}
-      <p
-        style={{
-          margin: 0,
-          fontSize: 12,
-          color: theme.palette.muted,
-          textAlign: 'center',
-          fontFamily: theme.fonts.body,
-        }}
-      >
-        We won&apos;t spam you. We don&apos;t have time for that either.
-      </p>
-    </form>
+          <Button variant="ghost" onClick={onBack}>
+            ← Back
+          </Button>
+          <Button onClick={onNext} disabled={!canNext || submitting}>
+            {submitting ? 'Submitting…' : `${nextLabel}  →`}
+          </Button>
+        </div>
+      </FormCard>
+    </>
   );
 }
 
-// ───────── Question screens ─────────
 function Q1({
   value,
   setValue,
@@ -449,13 +473,13 @@ function Q1({
     { v: 'no', l: 'No', s: "I haven't really started. That's why I'm here." },
   ];
   return (
-    <QuestionFrame
+    <QuestionShell
       step={1}
       total={4}
       eyebrow="Question 01"
       question="Do you currently make content?"
       hint="It's okay if you don't — most of our clients didn't either."
-      onBack={() => go('hero')}
+      onBack={() => go('contact')}
       onNext={() => go('q2')}
       canNext={!!value}
     >
@@ -468,7 +492,7 @@ function Q1({
           onClick={() => setValue(o.v)}
         />
       ))}
-    </QuestionFrame>
+    </QuestionShell>
   );
 }
 
@@ -491,7 +515,7 @@ function Q2({
     setValues(values.includes(v) ? values.filter((x) => x !== v) : [...values, v]);
   }
   return (
-    <QuestionFrame
+    <QuestionShell
       step={2}
       total={4}
       eyebrow="Question 02"
@@ -501,7 +525,7 @@ function Q2({
       onNext={() => go('q3')}
       canNext={values.length > 0}
     >
-      <div className="dfy-q2-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+      <div className="dfy-q-options-grid" style={{ display: 'grid', gap: 12 }}>
         {opts.map((o) => (
           <OptionCard
             key={o.v}
@@ -513,7 +537,7 @@ function Q2({
           />
         ))}
       </div>
-    </QuestionFrame>
+    </QuestionShell>
   );
 }
 
@@ -534,7 +558,7 @@ function Q3({
     { v: '20k+', l: '$20k+', s: 'White-glove, weekly strategy, dedicated team.' },
   ];
   return (
-    <QuestionFrame
+    <QuestionShell
       step={3}
       total={4}
       eyebrow="Question 03"
@@ -554,67 +578,53 @@ function Q3({
           onClick={() => setValue(o.v)}
         />
       ))}
-    </QuestionFrame>
+    </QuestionShell>
   );
 }
 
 function Q4({
   value,
   setValue,
-  go,
   submit,
   submitting,
   error,
+  go,
 }: {
   value: Setup | undefined;
   setValue: (v: Setup) => void;
-  go: (s: Screen) => void;
   submit: () => void;
   submitting: boolean;
   error: string | null;
+  go: (s: Screen) => void;
 }) {
   const opts: { v: Setup; l: string; s: string; dq?: boolean }[] = [
     { v: 'yes', l: 'Yes', s: 'I can carve out 1-2 hours, once, to make this work.' },
     { v: 'no', l: 'No', s: "I genuinely can't commit any time. Even once.", dq: true },
   ];
   return (
-    <>
-      <QuestionFrame
-        step={4}
-        total={4}
-        eyebrow="Question 04 — last one"
-        question="Can you give us 1-2 hours to set this up?"
-        hint="One session. We capture your face, voice, and the way you actually talk. After that, you're hands-off."
-        onBack={() => go('q3')}
-        onNext={submit}
-        canNext={!!value}
-        nextLabel="Submit"
-        submitting={submitting}
-      >
-        {opts.map((o) => (
-          <OptionCard
-            key={o.v}
-            selected={value === o.v}
-            label={o.l}
-            sub={o.s}
-            badge={o.dq ? 'deal-breaker' : null}
-            onClick={() => setValue(o.v)}
-          />
-        ))}
-        {error && (
-          <p
-            style={{
-              margin: 0,
-              fontSize: 13,
-              color: '#ff7a7a',
-              fontFamily: theme.fonts.body,
-            }}
-            role="alert"
-          >
-            {error}
-          </p>
-        )}
-      </QuestionFrame>
-    </>
+    <QuestionShell
+      step={4}
+      total={4}
+      eyebrow="Question 04 — last one"
+      question="Can you give us 1-2 hours to set this up?"
+      hint="One session. We capture your face, voice, and the way you actually talk. After that, you're hands-off."
+      onBack={() => go('q3')}
+      onNext={submit}
+      canNext={!!value}
+      nextLabel="Submit"
+      submitting={submitting}
+      error={error}
+    >
+      {opts.map((o) => (
+        <OptionCard
+          key={o.v}
+          selected={value === o.v}
+          label={o.l}
+          sub={o.s}
+          badge={o.dq ? 'deal-breaker' : null}
+          onClick={() => setValue(o.v)}
+        />
+      ))}
+    </QuestionShell>
   );
 }
