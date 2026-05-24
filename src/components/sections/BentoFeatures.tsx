@@ -9,15 +9,16 @@ import {
   SectionTitle,
   StaggerItem,
 } from '@/components/atoms';
+import type { Variant } from '@/lib/variants';
 
-export function BentoFeatures() {
+export function BentoFeatures({ variant }: { variant: Variant }) {
   return (
     <Section id="features" style={{ background: theme.palette.bg }}>
       <Container>
         <SectionTitle
           eyebrow="What we do"
-          title="Everything you'd hire a 4-person content team to do, in one place."
-          subtitle="Strategy, capture, production, and posting — handled end-to-end so you can stay focused on the business."
+          title={variant.bento.title}
+          subtitle={variant.bento.sub}
         />
 
         <ScrollStagger
@@ -33,24 +34,26 @@ export function BentoFeatures() {
           </StaggerItem>
           <StaggerItem className="dfy-bento-cell">
             <FeatureCard
-              title="Content Strategy"
-              description="We plan a 30-day calendar around your audience, your goals, and what's working right now."
-              visual={<CalendarVisual />}
+              title="Production & Editing"
+              description="Hooks, cuts, captions, B-roll, thumbnails. Our editors handle the polish — broadcast quality, every time."
+              visual={<EditingVisual />}
             />
           </StaggerItem>
           <StaggerItem className="dfy-bento-cell">
             <FeatureCard
               title="Multi-Platform Publishing"
-              description="TikTok, Instagram, YouTube Shorts, LinkedIn, X. Wherever your audience scrolls."
+              description="TikTok, Instagram, YouTube Shorts, LinkedIn, X. Wherever your audience scrolls — we post there."
               visual={<PlatformsVisual />}
             />
           </StaggerItem>
           <StaggerItem className="dfy-bento-cell dfy-bento-wide">
             <FeatureCard
               wide
-              title="End-To-End Editing & Posting"
-              description="Hooks, cuts, captions, B-roll, thumbnails. Our editors handle the polish. You handle the approval — one tap to post."
-              visual={<EditingVisual />}
+              accent
+              eyebrow="The headline service"
+              title="Scripting & Strategy"
+              description="Our writers craft every piece — around your audience, your offer, and what's converting right now. Scripting alone is what most agencies charge $5k+/mo for. With us, it's included."
+              visual={<ScriptingVisual />}
             />
           </StaggerItem>
         </ScrollStagger>
@@ -64,17 +67,24 @@ function FeatureCard({
   description,
   visual,
   wide,
+  accent,
+  eyebrow,
 }: {
   title: string;
   description: string;
   visual: ReactNode;
   wide?: boolean;
+  accent?: boolean;
+  eyebrow?: string;
 }) {
   return (
     <div
+      className={wide ? 'dfy-feat-wide' : undefined}
       style={{
-        background: theme.palette.surface,
-        border: `1px solid ${theme.palette.borderSoft}`,
+        background: accent
+          ? `linear-gradient(135deg, ${theme.palette.accentBg} 0%, ${theme.palette.surface} 100%)`
+          : theme.palette.surface,
+        border: `1px solid ${accent ? theme.palette.borderAccent : theme.palette.borderSoft}`,
         borderRadius: theme.radius.xl,
         padding: 28,
         height: '100%',
@@ -86,7 +96,6 @@ function FeatureCard({
         overflow: 'hidden',
       }}
     >
-      {/* Soft accent corner */}
       <div
         aria-hidden
         style={{
@@ -101,6 +110,20 @@ function FeatureCard({
         }}
       />
       <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {eyebrow && (
+          <span
+            style={{
+              fontFamily: theme.fonts.body,
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: theme.palette.accent,
+            }}
+          >
+            {eyebrow}
+          </span>
+        )}
         <h3 className="h-card" style={{ margin: 0 }}>
           {title}
         </h3>
@@ -116,14 +139,14 @@ function FeatureCard({
           {description}
         </p>
       </div>
-      <div style={{ flex: wide ? '0 0 50%' : '1', position: 'relative', display: 'flex' }}>
+      <div style={{ flex: wide ? '0 0 45%' : '1', position: 'relative', display: 'flex' }}>
         {visual}
       </div>
     </div>
   );
 }
 
-// ───────── Placeholder visuals (abstract, designerly) ─────────
+// ───────── Placeholder visuals ─────────
 
 function CloneVisual() {
   return (
@@ -169,39 +192,6 @@ function CloneVisual() {
           <path d="M3 8l4 4 6-8" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
-    </div>
-  );
-}
-
-function CalendarVisual() {
-  return (
-    <div
-      style={{
-        width: '100%',
-        minHeight: 140,
-        borderRadius: theme.radius.lg,
-        background: theme.palette.surfaceMuted,
-        border: `1px solid ${theme.palette.borderSoft}`,
-        padding: 14,
-        display: 'grid',
-        gridTemplateColumns: 'repeat(7, 1fr)',
-        gap: 6,
-      }}
-    >
-      {Array.from({ length: 21 }).map((_, i) => {
-        const filled = [2, 4, 7, 9, 12, 14, 17, 19].includes(i);
-        return (
-          <div
-            key={i}
-            style={{
-              aspectRatio: '1',
-              borderRadius: 6,
-              background: filled ? theme.palette.accent : theme.palette.bg,
-              opacity: filled ? 1 : 0.7,
-            }}
-          />
-        );
-      })}
     </div>
   );
 }
@@ -258,7 +248,7 @@ function EditingVisual() {
     <div
       style={{
         width: '100%',
-        minHeight: 180,
+        minHeight: 140,
         borderRadius: theme.radius.lg,
         background: theme.palette.surfaceMuted,
         border: `1px solid ${theme.palette.borderSoft}`,
@@ -268,12 +258,11 @@ function EditingVisual() {
         gap: 10,
       }}
     >
-      {/* Video timeline mock */}
       <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
         <div
           style={{
             flex: 1,
-            height: 32,
+            height: 28,
             borderRadius: 6,
             background: `linear-gradient(90deg, ${theme.palette.accent} 0%, ${theme.palette.accent} 35%, ${theme.palette.bg} 35%, ${theme.palette.bg} 100%)`,
           }}
@@ -284,15 +273,11 @@ function EditingVisual() {
         <div style={{ flex: 2, height: 14, borderRadius: 4, background: theme.palette.accentSoft }} />
         <div style={{ flex: 1, height: 14, borderRadius: 4, background: theme.palette.bg }} />
       </div>
-      <div style={{ display: 'flex', gap: 6 }}>
-        <div style={{ flex: 3, height: 14, borderRadius: 4, background: theme.palette.bg }} />
-        <div style={{ flex: 1, height: 14, borderRadius: 4, background: theme.palette.accent }} />
-      </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
         <div
           style={{
-            width: 32,
-            height: 32,
+            width: 28,
+            height: 28,
             borderRadius: 999,
             background: theme.palette.accent,
             display: 'flex',
@@ -300,16 +285,108 @@ function EditingVisual() {
             justifyContent: 'center',
           }}
         >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
             <path d="M3 2l6 4-6 4V2z" fill="#fff" />
           </svg>
         </div>
         <div style={{ flex: 1, height: 4, borderRadius: 999, background: theme.palette.bg, position: 'relative' }}>
           <div style={{ position: 'absolute', inset: 0, width: '40%', background: theme.palette.accent, borderRadius: 999 }} />
         </div>
-        <span style={{ fontFamily: theme.fonts.body, fontSize: 12, color: theme.palette.fgMuted, fontWeight: 600 }}>
+        <span style={{ fontFamily: theme.fonts.body, fontSize: 11, color: theme.palette.fgMuted, fontWeight: 600 }}>
           0:24 / 1:02
         </span>
+      </div>
+    </div>
+  );
+}
+
+function ScriptingVisual() {
+  // A stylized "script document" preview
+  return (
+    <div
+      style={{
+        width: '100%',
+        minHeight: 200,
+        borderRadius: theme.radius.lg,
+        background: theme.palette.surface,
+        border: `1px solid ${theme.palette.borderSoft}`,
+        padding: 18,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 10,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Top bar like a document */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+        <div style={{ width: 8, height: 8, borderRadius: 999, background: '#ef4444' }} />
+        <div style={{ width: 8, height: 8, borderRadius: 999, background: '#f59e0b' }} />
+        <div style={{ width: 8, height: 8, borderRadius: 999, background: '#10b981' }} />
+        <span
+          style={{
+            marginLeft: 8,
+            fontFamily: theme.fonts.body,
+            fontSize: 11,
+            fontWeight: 600,
+            color: theme.palette.fgSubtle,
+            letterSpacing: '0.05em',
+          }}
+        >
+          script_apr_24.md
+        </span>
+      </div>
+
+      {/* Script "lines" */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+        <span
+          style={{
+            fontFamily: theme.fonts.body,
+            fontSize: 11,
+            fontWeight: 700,
+            color: theme.palette.accent,
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+          }}
+        >
+          HOOK
+        </span>
+        <div style={{ height: 7, borderRadius: 4, background: theme.palette.bgSubtle, width: '92%' }} />
+        <div style={{ height: 7, borderRadius: 4, background: theme.palette.bgSubtle, width: '76%' }} />
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+        <span
+          style={{
+            fontFamily: theme.fonts.body,
+            fontSize: 11,
+            fontWeight: 700,
+            color: theme.palette.accent,
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+          }}
+        >
+          BODY
+        </span>
+        <div style={{ height: 7, borderRadius: 4, background: theme.palette.bgSubtle, width: '88%' }} />
+        <div style={{ height: 7, borderRadius: 4, background: theme.palette.bgSubtle, width: '94%' }} />
+        <div style={{ height: 7, borderRadius: 4, background: theme.palette.bgSubtle, width: '70%' }} />
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+        <span
+          style={{
+            fontFamily: theme.fonts.body,
+            fontSize: 11,
+            fontWeight: 700,
+            color: theme.palette.accent,
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+          }}
+        >
+          CTA
+        </span>
+        <div style={{ height: 7, borderRadius: 4, background: theme.palette.accentSoft, width: '60%' }} />
       </div>
     </div>
   );

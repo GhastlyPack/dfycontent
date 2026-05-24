@@ -3,8 +3,8 @@ import type { LeadAnswers, LeadContact } from '@/lib/types';
 import { identifyLead, trackEvent } from '@/lib/customerio';
 import { isQualified } from '@/lib/qualify';
 
-type ContactBody = { kind: 'contact'; contact: LeadContact };
-type QualifyBody = { kind: 'qualify'; email: string; answers: LeadAnswers };
+type ContactBody = { kind: 'contact'; contact: LeadContact; variant?: string };
+type QualifyBody = { kind: 'qualify'; email: string; answers: LeadAnswers; variant?: string };
 type Body = ContactBody | QualifyBody;
 
 export async function POST(req: Request) {
@@ -21,12 +21,13 @@ export async function POST(req: Request) {
       if (!c?.email || !c?.firstName || !c?.lastName) {
         return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
       }
-      await identifyLead(c);
+      await identifyLead(c, body.variant);
       await trackEvent(c.email, 'contact_submitted', {
         first_name: c.firstName,
         last_name: c.lastName,
         phone: c.phone,
         social_handle: c.socialHandle ?? '',
+        variant: body.variant ?? 'founder',
       });
       return NextResponse.json({ ok: true });
     }
@@ -42,6 +43,7 @@ export async function POST(req: Request) {
         budget: body.answers.budget,
         setup: body.answers.setup,
         qualified,
+        variant: body.variant ?? 'founder',
       });
       return NextResponse.json({ ok: true, qualified });
     }

@@ -3,8 +3,9 @@
 import { motion } from 'framer-motion';
 import { theme } from '@/lib/theme';
 import { Button, Container, ScrollReveal } from '@/components/atoms';
+import type { Variant } from '@/lib/variants';
 
-export function BigCTA() {
+export function BigCTA({ variant }: { variant: Variant }) {
   return (
     <section className="section" style={{ paddingTop: 32, paddingBottom: 32 }}>
       <Container>
@@ -19,7 +20,6 @@ export function BigCTA() {
             boxShadow: '0 20px 60px rgba(108, 92, 231, 0.32)',
           }}
         >
-          {/* Backdrop circles */}
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
@@ -65,7 +65,7 @@ export function BigCTA() {
                 color: '#fff',
               }}
             >
-              Ready to be everywhere?
+              {variant.bigCta.title}
             </h2>
             <p
               style={{
@@ -77,8 +77,7 @@ export function BigCTA() {
                 lineHeight: 1.5,
               }}
             >
-              See if we&apos;re a fit in 60 seconds. No spam, no commitment — just a
-              quick check before we hop on a call.
+              {variant.bigCta.sub}
             </p>
             <div style={{ marginTop: 12 }}>
               <Button

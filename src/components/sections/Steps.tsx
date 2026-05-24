@@ -9,23 +9,24 @@ import {
   StaggerItem,
   StepCircle,
 } from '@/components/atoms';
+import type { Variant } from '@/lib/variants';
 
-export function Steps() {
+export function Steps({ variant }: { variant: Variant }) {
   const steps = [
     {
       n: 1,
-      title: 'We Capture You',
-      body: 'One studio session — in person or remote, 1-2 hours. We capture your face, your voice, and the way you actually talk. Done forever.',
+      title: 'You spend 2 hours with us. Once.',
+      body: "Studio session — in person or remote — captures your face, voice, and the way you actually talk. That's the only time investment you'll ever make on this.",
     },
     {
       n: 2,
-      title: 'We Produce Your Content',
-      body: 'Your AI clone generates new pieces every week, reviewed and polished by our human editors. You see them before they go live.',
+      title: 'We script. Your clone delivers.',
+      body: "Our writers craft every piece around your audience and goals. Your AI clone — trained on you — performs them. Scripting alone is the headline service most agencies charge for separately. With us, it's included.",
     },
     {
       n: 3,
-      title: 'We Publish For You',
-      body: "You approve. We post — to every platform you're on. Engagement, comments, DMs come back to your real account, in your real voice.",
+      title: 'We edit, publish, and stay in your voice.',
+      body: "Our editors polish the cuts, captions, and hooks. We post to every platform you're on. Engagement, comments, DMs all come back to your real account — in your real voice.",
     },
   ];
 
@@ -34,8 +35,8 @@ export function Steps() {
       <Container>
         <SectionTitle
           eyebrow="How it works"
-          title="Get started in 3 simple steps."
-          subtitle="From kickoff to your first post going live in 14 days. No surprises, no scope creep."
+          title={variant.steps.title}
+          subtitle={variant.steps.sub}
         />
 
         <ScrollStagger

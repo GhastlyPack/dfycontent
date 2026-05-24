@@ -227,12 +227,18 @@ a {
 }
 
 /* Bento — mobile single column, tablet 2-col, desktop 3+1 */
+.dfy-feat-wide {
+  flex-direction: column !important;
+}
 @media (min-width: 768px) {
   .dfy-bento {
     grid-template-columns: 1fr 1fr !important;
   }
   .dfy-bento-wide {
     grid-column: 1 / -1;
+  }
+  .dfy-feat-wide {
+    flex-direction: row !important;
   }
 }
 @media (min-width: 1024px) {

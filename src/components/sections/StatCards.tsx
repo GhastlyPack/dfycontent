@@ -8,13 +8,14 @@ import {
   SectionTitle,
   StaggerItem,
 } from '@/components/atoms';
+import type { Variant } from '@/lib/variants';
 
-export function StatCards() {
+export function StatCards({ variant }: { variant: Variant }) {
   const stats = [
-    { n: '30+', l: 'pieces of content / month, every month', offset: 0 },
-    { n: '0', l: 'hours you spend filming or editing', offset: 24 },
-    { n: '14d', l: 'from setup to your first post going live', offset: 0 },
-    { n: '100%', l: 'your face, voice, and personal brand', offset: 24 },
+    { n: '30+', l: 'pieces of content / month, every month' },
+    { n: '2hrs', l: 'your one-time setup. Then never again.' },
+    { n: '14d', l: 'from kickoff to first post going live' },
+    { n: '100%', l: 'your face, voice, and scripts in your tone' },
   ];
 
   return (
@@ -22,8 +23,8 @@ export function StatCards() {
       <Container>
         <SectionTitle
           eyebrow="Why teams choose us"
-          title="Built for founders who don't have time, but need the reach."
-          subtitle="We designed the entire system around your calendar — not the other way around."
+          title={variant.stats.title}
+          subtitle={variant.stats.sub}
         />
 
         <ScrollStagger
@@ -65,13 +66,12 @@ function StatCard({ n, l }: { n: string; l: string }) {
         minHeight: 200,
       }}
     >
-      {/* Top: big number + accent dot */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <span
           className="h-section"
           style={{
             margin: 0,
-            fontSize: 'clamp(40px, 5vw, 64px)',
+            fontSize: 'clamp(36px, 5vw, 60px)',
             lineHeight: 1,
           }}
         >
@@ -88,7 +88,6 @@ function StatCard({ n, l }: { n: string; l: string }) {
           }}
         />
       </div>
-      {/* Bottom: label */}
       <span
         style={{
           fontFamily: theme.fonts.body,

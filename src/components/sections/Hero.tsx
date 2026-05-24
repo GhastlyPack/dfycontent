@@ -9,25 +9,27 @@ import {
   PillTag,
   Section,
 } from '@/components/atoms';
+import type { Variant } from '@/lib/variants';
 
-export function Hero() {
+export function Hero({ variant }: { variant: Variant }) {
+  const { hero } = variant;
   return (
     <Section style={{ paddingTop: 32, position: 'relative', overflow: 'hidden' }}>
       <BackdropBlobs />
       <Container>
         <div className="dfy-hero-grid" style={{ display: 'grid', gap: 56, alignItems: 'center' }}>
-          {/* Text column — CSS-animated so it renders immediately on first paint */}
+          {/* Text column — CSS-animated for instant first-paint */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <div className="dfy-fade-up dfy-fade-up-1">
-              <Eyebrow>Done-for-you content for busy founders</Eyebrow>
+              <Eyebrow>{hero.eyebrow}</Eyebrow>
             </div>
             <h1 className="h-hero dfy-fade-up dfy-fade-up-2" style={{ margin: 0 }}>
-              Grow Your Brand With Content That{' '}
-              <span style={{ color: theme.palette.accent }}>Sounds Like You.</span>
+              {hero.h1Pre}
+              <span style={{ color: theme.palette.accent }}>{hero.h1Accent}</span>
+              {hero.h1Post && ` ${hero.h1Post}`}
             </h1>
             <p className="t-lead dfy-fade-up dfy-fade-up-3" style={{ margin: 0, maxWidth: 540 }}>
-              We clone your face and voice with AI, then ship the social content
-              you should be posting — at scale, on autopilot, in your voice.
+              {hero.sub}
             </p>
             <div
               className="dfy-fade-up dfy-fade-up-4"
@@ -55,7 +57,7 @@ export function Hero() {
               <AvatarStack />
               <span>
                 <strong style={{ color: theme.palette.fg, fontWeight: 700 }}>50+</strong>{' '}
-                founders trust us with their content
+                {variant.audienceLabel} trust us with their content
               </span>
             </div>
           </div>
@@ -92,7 +94,6 @@ function HeroVisual() {
           overflow: 'hidden',
         }}
       >
-        {/* Soft circle highlight */}
         <div
           style={{
             position: 'absolute',
@@ -105,7 +106,6 @@ function HeroVisual() {
             filter: 'blur(24px)',
           }}
         />
-        {/* "Your face" placeholder mark */}
         <div
           style={{
             position: 'absolute',
@@ -154,12 +154,11 @@ function HeroVisual() {
               lineHeight: 1.5,
             }}
           >
-            Cloned once, multiplied across every platform — by us.
+            Two hours to capture. A lifetime of content after.
           </div>
         </div>
       </div>
 
-      {/* Floating platform tags — JS-animated bobbing (cosmetic, ok to be JS-dependent) */}
       <FloatingTag label="Instagram" color="#e1306c" position={{ top: '10%', left: '-2%' }} bobDur={4} />
       <FloatingTag label="TikTok" color="#000000" position={{ top: '24%', right: '0%' }} bobDur={5} />
       <FloatingTag label="LinkedIn" color="#0a66c2" position={{ bottom: '24%', left: '-4%' }} bobDur={4.5} />

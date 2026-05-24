@@ -9,6 +9,7 @@ import {
   Star,
   StaggerItem,
 } from '@/components/atoms';
+import type { Variant } from '@/lib/variants';
 
 type Testimonial = {
   quote: string;
@@ -22,7 +23,7 @@ type Testimonial = {
 const testimonials: Testimonial[] = [
   {
     quote:
-      "I went from posting once a month to 4x a week. My DMs are full. I haven't touched a camera in 90 days.",
+      "I went from posting once a month to 4x a week. My DMs are full. I haven't touched a camera in 90 days. The scripting alone was worth what we pay.",
     name: 'Jordan M.',
     role: 'Founder, B2B SaaS',
     initials: 'JM',
@@ -31,7 +32,7 @@ const testimonials: Testimonial[] = [
   },
   {
     quote:
-      'The clone is uncanny — friends thought I was actually filming TikToks. The team handles literally everything.',
+      'The clone is uncanny — friends thought I was actually filming TikToks. The team handles literally everything, including the scripts.',
     name: 'Priya S.',
     role: 'Consultant',
     initials: 'PS',
@@ -39,7 +40,7 @@ const testimonials: Testimonial[] = [
   },
   {
     quote:
-      'Saved me 10 hours a week and grew my LinkedIn from 4k to 18k followers in 4 months.',
+      'Saved me 10 hours a week and grew my LinkedIn from 4k to 18k followers in 4 months. Two-hour setup, paid back forever.',
     name: 'Marcus T.',
     role: 'Agency owner',
     initials: 'MT',
@@ -47,7 +48,7 @@ const testimonials: Testimonial[] = [
   },
   {
     quote:
-      "Honest, fair pricing. They told me upfront what I'd get. Showed up on day 14 with the content live.",
+      "Honest, fair pricing. They told me upfront what I'd get. Showed up on day 14 with the content live — and it sounded like me.",
     name: 'Sasha K.',
     role: 'Operator',
     initials: 'SK',
@@ -55,14 +56,14 @@ const testimonials: Testimonial[] = [
   },
 ];
 
-export function Testimonials() {
+export function Testimonials({ variant }: { variant: Variant }) {
   return (
     <Section id="testimonials">
       <Container>
         <SectionTitle
           eyebrow="Real founders, real results"
-          title="What our clients say."
-          subtitle="Real-world stories from founders, consultants, and operators we've cloned."
+          title={variant.testimonials.title}
+          subtitle={variant.testimonials.sub}
         />
 
         <ScrollStagger

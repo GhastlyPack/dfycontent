@@ -89,6 +89,7 @@ export function Flow() {
     setSubmitting(true);
     setError(null);
     try {
+      const variant = (typeof window !== 'undefined' && sessionStorage.getItem('lead.variant')) || 'founder';
       const res = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -101,6 +102,7 @@ export function Flow() {
             phone: contact.phone,
             socialHandle: contact.handle ?? '',
           },
+          variant,
         }),
       });
       if (!res.ok) {
@@ -126,6 +128,7 @@ export function Flow() {
     setSubmitting(true);
     setError(null);
     try {
+      const variant = (typeof window !== 'undefined' && sessionStorage.getItem('lead.variant')) || 'founder';
       const res = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -138,6 +141,7 @@ export function Flow() {
             budget: answers.budget,
             setup: answers.setup,
           },
+          variant,
         }),
       });
       if (!res.ok) {

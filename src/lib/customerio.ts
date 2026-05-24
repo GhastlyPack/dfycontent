@@ -42,7 +42,7 @@ export function leadId(email: string): string {
   return email.trim().toLowerCase();
 }
 
-export async function identifyLead(contact: LeadContact): Promise<void> {
+export async function identifyLead(contact: LeadContact, variant?: string): Promise<void> {
   const id = leadId(contact.email);
   await cio('PUT', `/customers/${encodeURIComponent(id)}`, {
     email: contact.email,
@@ -50,6 +50,7 @@ export async function identifyLead(contact: LeadContact): Promise<void> {
     last_name: contact.lastName,
     phone: contact.phone,
     social_handle: contact.socialHandle ?? '',
+    lander_variant: variant ?? 'founder',
     created_at: Math.floor(Date.now() / 1000),
   });
 }

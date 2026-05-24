@@ -2,8 +2,9 @@
 
 import { theme } from '@/lib/theme';
 import { Container, ScrollReveal, Section } from '@/components/atoms';
+import type { Variant } from '@/lib/variants';
 
-export function TrustStrip() {
+export function TrustStrip({ variant }: { variant: Variant }) {
   const logos = ['LIPSUM', 'LOREM', 'IPSUM', 'CIRCA', 'NEXTUS', 'AVERY'];
 
   return (
@@ -23,12 +24,11 @@ export function TrustStrip() {
                 fontFamily: theme.fonts.body,
                 fontSize: 14,
                 color: theme.palette.fgMuted,
-                maxWidth: 220,
+                maxWidth: 240,
                 lineHeight: 1.5,
               }}
             >
-              Trusted by founders, consultants, and operators building public-facing
-              brands.
+              {variant.trust}
             </span>
           </div>
 
