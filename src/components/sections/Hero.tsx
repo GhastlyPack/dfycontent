@@ -7,10 +7,8 @@ import {
   Container,
   Eyebrow,
   PillTag,
-  ScrollReveal,
   Section,
 } from '@/components/atoms';
-import { fadeUp, staggerSlow } from '@/lib/motion';
 
 export function Hero() {
   return (
@@ -18,30 +16,21 @@ export function Hero() {
       <BackdropBlobs />
       <Container>
         <div className="dfy-hero-grid" style={{ display: 'grid', gap: 56, alignItems: 'center' }}>
-          {/* Text column */}
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerSlow}
-            style={{ display: 'flex', flexDirection: 'column', gap: 24 }}
-          >
-            <motion.div variants={fadeUp}>
+          {/* Text column — CSS-animated so it renders immediately on first paint */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            <div className="dfy-fade-up dfy-fade-up-1">
               <Eyebrow>Done-for-you content for busy founders</Eyebrow>
-            </motion.div>
-            <motion.h1 variants={fadeUp} className="h-hero" style={{ margin: 0 }}>
+            </div>
+            <h1 className="h-hero dfy-fade-up dfy-fade-up-2" style={{ margin: 0 }}>
               Grow Your Brand With Content That{' '}
               <span style={{ color: theme.palette.accent }}>Sounds Like You.</span>
-            </motion.h1>
-            <motion.p
-              variants={fadeUp}
-              className="t-lead"
-              style={{ margin: 0, maxWidth: 540 }}
-            >
+            </h1>
+            <p className="t-lead dfy-fade-up dfy-fade-up-3" style={{ margin: 0, maxWidth: 540 }}>
               We clone your face and voice with AI, then ship the social content
               you should be posting — at scale, on autopilot, in your voice.
-            </motion.p>
-            <motion.div
-              variants={fadeUp}
+            </p>
+            <div
+              className="dfy-fade-up dfy-fade-up-4"
               style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 8 }}
             >
               <Button href="/apply" variant="primary" size="lg">
@@ -50,11 +39,9 @@ export function Hero() {
               <Button href="#how-it-works" variant="ghost" size="lg">
                 See how it works
               </Button>
-            </motion.div>
-
-            {/* Trust micro-row */}
-            <motion.div
-              variants={fadeUp}
+            </div>
+            <div
+              className="dfy-fade-up dfy-fade-up-5"
               style={{
                 marginTop: 8,
                 display: 'flex',
@@ -70,8 +57,8 @@ export function Hero() {
                 <strong style={{ color: theme.palette.fg, fontWeight: 700 }}>50+</strong>{' '}
                 founders trust us with their content
               </span>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Visual column */}
           <HeroVisual />
@@ -83,8 +70,8 @@ export function Hero() {
 
 function HeroVisual() {
   return (
-    <ScrollReveal
-      className="dfy-hero-visual"
+    <div
+      className="dfy-hero-visual dfy-fade-scale"
       style={{
         position: 'relative',
         minHeight: 480,
@@ -94,10 +81,7 @@ function HeroVisual() {
       }}
     >
       {/* Central content card */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.92 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+      <div
         style={{
           position: 'relative',
           width: 'min(320px, 80%)',
@@ -173,36 +157,32 @@ function HeroVisual() {
             Cloned once, multiplied across every platform — by us.
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Floating platform tags */}
-      <FloatingTag label="Instagram" color="#e1306c" delay={0.4} position={{ top: '10%', left: '-2%' }} bobDur={4} />
-      <FloatingTag label="TikTok" color="#000000" delay={0.6} position={{ top: '24%', right: '0%' }} bobDur={5} />
-      <FloatingTag label="LinkedIn" color="#0a66c2" delay={0.8} position={{ bottom: '24%', left: '-4%' }} bobDur={4.5} />
-      <FloatingTag label="YouTube Shorts" color="#ff0000" delay={1.0} position={{ bottom: '8%', right: '-2%' }} bobDur={5.5} />
-    </ScrollReveal>
+      {/* Floating platform tags — JS-animated bobbing (cosmetic, ok to be JS-dependent) */}
+      <FloatingTag label="Instagram" color="#e1306c" position={{ top: '10%', left: '-2%' }} bobDur={4} />
+      <FloatingTag label="TikTok" color="#000000" position={{ top: '24%', right: '0%' }} bobDur={5} />
+      <FloatingTag label="LinkedIn" color="#0a66c2" position={{ bottom: '24%', left: '-4%' }} bobDur={4.5} />
+      <FloatingTag label="YouTube Shorts" color="#ff0000" position={{ bottom: '8%', right: '-2%' }} bobDur={5.5} />
+    </div>
   );
 }
 
 function FloatingTag({
   label,
   color,
-  delay,
   position,
   bobDur,
 }: {
   label: string;
   color: string;
-  delay: number;
   position: { top?: string; bottom?: string; left?: string; right?: string };
   bobDur: number;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+    <div
       style={{ position: 'absolute', ...position, zIndex: 2 }}
+      className="dfy-fade-up dfy-fade-up-3"
     >
       <motion.div
         animate={{ y: [0, -8, 0] }}
@@ -210,7 +190,7 @@ function FloatingTag({
       >
         <PillTag label={label} dotColor={color} />
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
 
