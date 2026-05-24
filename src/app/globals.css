@@ -363,6 +363,34 @@ a {
 }
 
 /* ──────────────────────────────────────────────
+   Marquee (used by motion-atoms <Marquee />)
+   ────────────────────────────────────────────── */
+@keyframes dfyMarquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Pulse halo (used by /v-video play button, /v-dark accent dots) */
+@keyframes dfyPulseHalo {
+  0%   { transform: scale(1);    opacity: 0.55; }
+  70%  { transform: scale(1.8);  opacity: 0; }
+  100% { transform: scale(1.8);  opacity: 0; }
+}
+
+/* Ambient gradient drift (used by /v-dark backdrop) */
+@keyframes dfyGradientDrift {
+  0%   { transform: translate(0%, 0%) rotate(0deg); }
+  50%  { transform: translate(2%, -3%) rotate(2deg); }
+  100% { transform: translate(0%, 0%) rotate(0deg); }
+}
+
+/* Cursor blink (used by /v-minimal) */
+@keyframes dfyBlink {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ──────────────────────────────────────────────
    Reduced motion
    ────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

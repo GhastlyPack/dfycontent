@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { TrackVariant } from '@/components/TrackVariant';
+import { Reveal, StaggerChild, StaggerGroup } from '@/components/motion-atoms';
 
 /**
  * /v-before-after — Comparison-driven.
@@ -77,57 +78,79 @@ export default function Page() {
 
         {/* Hero */}
         <section style={{ maxWidth: 1280, margin: '0 auto', padding: 'clamp(48px, 7vw, 96px) 24px 32px', textAlign: 'center' }}>
-          <span style={{ display: 'inline-block', padding: '6px 14px', background: '#fff7ed', color: '#c2410c', borderRadius: 999, fontFamily: BODY, fontSize: 12, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' }}>
-            The honest comparison
-          </span>
-          <h1
-            style={{
-              fontFamily: DISPLAY,
-              fontSize: 'clamp(40px, 6.5vw, 72px)',
-              fontWeight: 700,
-              letterSpacing: '-0.025em',
-              lineHeight: 1.05,
-              margin: '24px 0 0',
-              maxWidth: 880,
-              marginLeft: 'auto',
-              marginRight: 'auto',
-            }}
-          >
-            Your content week, <span style={{ color: BAD }}>before</span>{' '}
-            <span style={{ color: MUTED, fontWeight: 500, fontSize: '0.7em' }}>vs.</span>{' '}
-            <span style={{ color: GOOD }}>after</span>.
-          </h1>
-          <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.55, marginTop: 20, maxWidth: 580, marginLeft: 'auto', marginRight: 'auto' }}>
-            Same week. Same goals. What changes is who&apos;s holding the camera.
-          </p>
+          <Reveal>
+            <span style={{ display: 'inline-block', padding: '6px 14px', background: '#fff7ed', color: '#c2410c', borderRadius: 999, fontFamily: BODY, fontSize: 12, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+              The honest comparison
+            </span>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <h1
+              style={{
+                fontFamily: DISPLAY,
+                fontSize: 'clamp(40px, 6.5vw, 72px)',
+                fontWeight: 700,
+                letterSpacing: '-0.025em',
+                lineHeight: 1.05,
+                margin: '24px 0 0',
+                maxWidth: 880,
+                marginLeft: 'auto',
+                marginRight: 'auto',
+              }}
+            >
+              Your content week, <span style={{ color: BAD }}>before</span>{' '}
+              <span style={{ color: MUTED, fontWeight: 500, fontSize: '0.7em' }}>vs.</span>{' '}
+              <span style={{ color: GOOD }}>after</span>.
+            </h1>
+          </Reveal>
+          <Reveal delay={0.2}>
+            <p style={{ fontSize: 17, color: MUTED, lineHeight: 1.55, marginTop: 20, maxWidth: 580, marginLeft: 'auto', marginRight: 'auto' }}>
+              Same week. Same goals. What changes is who&apos;s holding the camera.
+            </p>
+          </Reveal>
         </section>
 
-        {/* Comparison table */}
+        {/* Comparison table — rows reveal sequentially */}
         <section style={{ maxWidth: 1080, margin: '0 auto', padding: '32px 24px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '40px 1fr 1fr', gap: 16, marginBottom: 8 }}>
-            <div />
-            <ColumnHead kind="bad" label="Without DFY" sub="What you do today" />
-            <ColumnHead kind="good" label="With DFY" sub="The 2-hour exchange" />
-          </div>
+          <Reveal>
+            <div style={{ display: 'grid', gridTemplateColumns: '40px 1fr 1fr', gap: 16, marginBottom: 8 }}>
+              <div />
+              <ColumnHead kind="bad" label="Without DFY" sub="What you do today" />
+              <ColumnHead kind="good" label="With DFY" sub="The 2-hour exchange" />
+            </div>
+          </Reveal>
 
-          <Row num="01"
-            left="Monday: stare at content calendar, feel guilt, set up tripod, get interrupted."
-            right="Monday: review 5 scripts in your voice, approve 4, send notes on 1." />
-          <Row num="02"
-            left="Tuesday: try to film, hate every take, abandon."
-            right="Tuesday: your face goes live on TikTok, Instagram, LinkedIn — without you." />
-          <Row num="03"
-            left="Wednesday: spend the day on actual business. Posting drops to zero."
-            right="Wednesday: spend the day on actual business. Posting hits 4." />
-          <Row num="04"
-            left="Thursday: open Instagram, see competitors posting daily, feel worse."
-            right="Thursday: see your face in 'For You' feeds. Engagement returns to your account." />
-          <Row num="05"
-            left="Friday: post one rushed thing because you 'have to'. Quality suffers."
-            right="Friday: editors send next week's cut for review. Continuity built in." />
-          <Row num="06"
-            left="End of month: 2-3 pieces posted. Engagement flat. Burnout up."
-            right="End of month: 30+ pieces posted. Engagement up. You haven't filmed once." />
+          <StaggerGroup staggerDelay={0.1} amount={0.1}>
+            <StaggerChild>
+              <Row num="01"
+                left="Monday: stare at content calendar, feel guilt, set up tripod, get interrupted."
+                right="Monday: review 5 scripts in your voice, approve 4, send notes on 1." />
+            </StaggerChild>
+            <StaggerChild>
+              <Row num="02"
+                left="Tuesday: try to film, hate every take, abandon."
+                right="Tuesday: your face goes live on TikTok, Instagram, LinkedIn — without you." />
+            </StaggerChild>
+            <StaggerChild>
+              <Row num="03"
+                left="Wednesday: spend the day on actual business. Posting drops to zero."
+                right="Wednesday: spend the day on actual business. Posting hits 4." />
+            </StaggerChild>
+            <StaggerChild>
+              <Row num="04"
+                left="Thursday: open Instagram, see competitors posting daily, feel worse."
+                right="Thursday: see your face in 'For You' feeds. Engagement returns to your account." />
+            </StaggerChild>
+            <StaggerChild>
+              <Row num="05"
+                left="Friday: post one rushed thing because you 'have to'. Quality suffers."
+                right="Friday: editors send next week's cut for review. Continuity built in." />
+            </StaggerChild>
+            <StaggerChild>
+              <Row num="06"
+                left="End of month: 2-3 pieces posted. Engagement flat. Burnout up."
+                right="End of month: 30+ pieces posted. Engagement up. You haven't filmed once." />
+            </StaggerChild>
+          </StaggerGroup>
         </section>
 
         {/* What you actually trade */}
@@ -140,7 +163,7 @@ export default function Page() {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 1fr', gap: 16, alignItems: 'stretch' }}>
-              <div style={{ background: BAD_BG, border: `1px solid ${BAD}30`, borderRadius: 18, padding: 28 }}>
+              <Reveal delay={0.0} style={{ background: BAD_BG, border: `1px solid ${BAD}30`, borderRadius: 18, padding: 28 }}>
                 <span style={{ fontFamily: BODY, fontSize: 11, fontWeight: 700, color: BAD, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
                   You give up
                 </span>
@@ -157,13 +180,21 @@ export default function Page() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </Reveal>
 
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: DISPLAY, fontSize: 32, fontWeight: 700, color: MUTED }}>
-                →
+                <span
+                  style={{
+                    animation: 'dfyArrowSlide 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite',
+                    display: 'inline-block',
+                  }}
+                >
+                  →
+                </span>
+                <style>{`@keyframes dfyArrowSlide { 0%{transform:translateX(-8px);opacity:0.4;} 50%{transform:translateX(8px);opacity:1;} 100%{transform:translateX(-8px);opacity:0.4;} }`}</style>
               </div>
 
-              <div style={{ background: GOOD_BG, border: `1px solid ${GOOD}30`, borderRadius: 18, padding: 28 }}>
+              <Reveal delay={0.2} style={{ background: GOOD_BG, border: `1px solid ${GOOD}30`, borderRadius: 18, padding: 28 }}>
                 <span style={{ fontFamily: BODY, fontSize: 11, fontWeight: 700, color: GOOD, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
                   You get back
                 </span>
@@ -180,7 +211,7 @@ export default function Page() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </Reveal>
             </div>
           </div>
         </section>

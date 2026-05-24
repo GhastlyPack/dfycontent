@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { TrackVariant } from '@/components/TrackVariant';
+import { Reveal, WordReveal } from '@/components/motion-atoms';
 
 /**
  * /v-minimal — Brutalist minimalism.
@@ -45,14 +46,28 @@ export default function Page() {
               textTransform: 'uppercase',
             }}
           >
-            Two hours.
+            <WordReveal text="Two hours." delay={0.1} stagger={0.1} />
             <br />
-            Then content
+            <WordReveal text="Then content" delay={0.35} stagger={0.1} />
             <br />
-            <span style={{ color: ACCENT }}>forever.</span>
+            <span style={{ color: ACCENT, display: 'inline-block' }}>
+              <WordReveal text="forever." delay={0.7} stagger={0.1} />
+              <span
+                aria-hidden
+                style={{
+                  display: 'inline-block',
+                  width: '0.5em',
+                  height: '0.85em',
+                  background: ACCENT,
+                  marginLeft: '0.05em',
+                  verticalAlign: '-0.05em',
+                  animation: 'dfyBlink 1.1s steps(2) 1.1s infinite',
+                }}
+              />
+            </span>
           </h1>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginTop: 80, maxWidth: 920 }}>
+          <Reveal delay={1.2} duration={0.7} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginTop: 80, maxWidth: 920 }}>
             <p style={{ fontSize: 16, lineHeight: 1.55, margin: 0, fontFamily: 'var(--font-body), system-ui, sans-serif' }}>
               We script, clone, and ship your social media — at scale, in your voice.
               Two hours of setup with our team. Then never film again.
@@ -75,7 +90,7 @@ export default function Page() {
                 Apply Now →
               </Link>
             </div>
-          </div>
+          </Reveal>
         </section>
 
         {/* Three-point manifesto */}
