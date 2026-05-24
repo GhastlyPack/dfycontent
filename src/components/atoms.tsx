@@ -56,6 +56,7 @@ export function Btn({
   const isPrimary = variant === 'primary';
   return (
     <button
+      className="dfy-btn"
       type={type}
       onClick={onClick}
       disabled={disabled}
@@ -309,11 +310,11 @@ export function DisplayHeadline({
         {eyebrow}
       </Eyebrow>
       <h1
+        className="dfy-display-h1"
         style={{
           margin: 0,
           fontFamily: f.display,
           fontWeight: f.weight,
-          fontSize: 'clamp(44px, 7.5vw, 128px)',
           lineHeight: 0.92,
           letterSpacing: f.tracking,
           color: theme.palette.fg,
@@ -354,6 +355,7 @@ export function DisplayHeadline({
 export function TopBar() {
   return (
     <div
+      className="dfy-topbar"
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -390,6 +392,7 @@ export function TopBar() {
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
         <span
+          className="dfy-topbar-status"
           style={{
             fontFamily: theme.fonts.mono,
             fontSize: 11,
@@ -458,6 +461,7 @@ export function Ticker() {
 export function KPIRow({ n, l, border }: { n: string; l: string; border?: boolean }) {
   return (
     <div
+      className="dfy-kpi-row"
       style={{
         padding: '32px 28px',
         borderLeft: border ? `1px solid ${theme.palette.border}` : 'none',
@@ -522,6 +526,7 @@ export function QuestionFrame({
 }) {
   return (
     <div
+      className="dfy-qframe"
       style={{
         padding: '32px 48px 0',
         maxWidth: 920,
@@ -536,6 +541,7 @@ export function QuestionFrame({
       <div style={{ marginTop: 56, display: 'flex', flexDirection: 'column', gap: 28, flex: 1 }}>
         <Eyebrow>{eyebrow}</Eyebrow>
         <h1
+          className="dfy-qframe-h1"
           style={{
             margin: 0,
             fontFamily: theme.fonts.display,
@@ -556,6 +562,7 @@ export function QuestionFrame({
         </div>
       </div>
       <div
+        className="dfy-qframe-actions"
         style={{
           display: 'flex',
           alignItems: 'center',

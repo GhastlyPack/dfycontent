@@ -224,6 +224,7 @@ function HeroBody({
   return (
     <>
       <div
+        className="dfy-hero-grid"
         style={{
           flex: 1,
           display: 'grid',
@@ -266,6 +267,7 @@ function HeroBody({
 
       {isSplit && (
         <div
+          className="dfy-kpi-section"
           style={{
             padding: '64px 48px 0',
             maxWidth: 1440,
@@ -274,6 +276,7 @@ function HeroBody({
           }}
         >
           <div
+            className="dfy-kpi-grid"
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
@@ -311,6 +314,7 @@ function ContactCard({
 }) {
   return (
     <form
+      className="dfy-contact-card"
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit();
@@ -352,7 +356,7 @@ function ContactCard({
       >
         Let&apos;s see if we&apos;re a fit.
       </h2>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
+      <div className="dfy-contact-name-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
         <Field
           label="First name"
           value={contact.firstName}
@@ -497,7 +501,7 @@ function Q2({
       onNext={() => go('q3')}
       canNext={values.length > 0}
     >
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+      <div className="dfy-q2-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
         {opts.map((o) => (
           <OptionCard
             key={o.v}

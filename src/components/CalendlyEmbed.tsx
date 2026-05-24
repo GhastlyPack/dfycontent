@@ -96,7 +96,7 @@ export function CalendlyEmbed() {
   return (
     <>
       <div
-        className="calendly-inline-widget"
+        className="calendly-inline-widget dfy-calendly"
         data-url={url}
         style={{
           minWidth: 320,

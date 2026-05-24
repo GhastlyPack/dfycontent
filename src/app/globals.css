@@ -41,3 +41,92 @@ a {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
+
+/* ────────────────────────────────────────────
+   Responsive layer.
+   Inline styles set the desktop baseline; these
+   rules override layout-sensitive bits at
+   smaller viewports. !important is intentional —
+   we are overriding inline styles.
+   ──────────────────────────────────────────── */
+
+/* DisplayHeadline owns its font-size purely via CSS
+   so the 128px max doesn't trigger break-word in the
+   split-column hero on wide desktops. */
+.dfy-display-h1 {
+  font-size: clamp(44px, 6vw, 96px);
+}
+
+/* < 900px: tablet / mobile */
+@media (max-width: 900px) {
+  .dfy-display-h1 {
+    font-size: clamp(48px, 12vw, 76px);
+  }
+  .dfy-qframe-h1 {
+    font-size: clamp(30px, 7vw, 44px) !important;
+  }
+  .dfy-page-h1 {
+    font-size: clamp(36px, 10vw, 64px) !important;
+  }
+
+  .dfy-hero-grid {
+    grid-template-columns: 1fr !important;
+    padding: 32px 20px 0 !important;
+    gap: 32px !important;
+    align-items: start !important;
+  }
+  .dfy-kpi-section {
+    padding: 32px 20px 0 !important;
+  }
+  .dfy-kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .dfy-kpi-row {
+    border-left: none !important;
+    padding: 24px 4px !important;
+  }
+  .dfy-kpi-row + .dfy-kpi-row {
+    border-top: 1px solid rgba(245, 244, 239, 0.12) !important;
+  }
+  .dfy-contact-card {
+    padding: 24px 20px !important;
+  }
+  .dfy-contact-name-row {
+    grid-template-columns: 1fr !important;
+  }
+  .dfy-topbar {
+    padding: 14px 18px !important;
+  }
+  .dfy-qframe {
+    padding: 24px 20px 0 !important;
+  }
+  .dfy-qframe-actions {
+    padding: 32px 0 40px !important;
+  }
+  .dfy-q2-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .dfy-page-section {
+    padding: 48px 20px !important;
+  }
+  .dfy-reason-card {
+    padding: 24px 20px !important;
+  }
+  .dfy-calendly {
+    height: 640px !important;
+    min-width: 0 !important;
+  }
+}
+
+/* < 480px: phones, tighter still */
+@media (max-width: 480px) {
+  .dfy-topbar-status {
+    font-size: 10px !important;
+    letter-spacing: 0.08em !important;
+  }
+  .dfy-btn {
+    padding: 14px 18px !important;
+    font-size: 12px !important;
+    letter-spacing: 0.06em !important;
+  }
+}

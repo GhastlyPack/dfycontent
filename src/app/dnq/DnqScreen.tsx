@@ -27,6 +27,7 @@ export function DnqScreen() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <TopBar />
       <div
+        className="dfy-page-section"
         style={{
           flex: 1,
           padding: '88px 48px',
@@ -40,6 +41,7 @@ export function DnqScreen() {
       >
         <Eyebrow>Not a fit — yet.</Eyebrow>
         <h1
+          className="dfy-page-h1"
           style={{
             margin: 0,
             fontFamily: theme.fonts.display,
@@ -74,6 +76,7 @@ export function DnqScreen() {
         </p>
 
         <div
+          className="dfy-reason-card"
           style={{
             marginTop: 24,
             padding: 32,
