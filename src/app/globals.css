@@ -311,6 +311,20 @@ a {
   }
 }
 
+/* Verdict grid on /vs/* */
+@media (min-width: 768px) {
+  .dfy-verdict-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* ROI calculator grid */
+@media (min-width: 900px) {
+  .dfy-calc-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
 /* Form card (used on /apply) */
 .dfy-form-card {
   padding: 28px 24px;

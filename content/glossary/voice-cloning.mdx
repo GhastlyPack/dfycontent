@@ -1,0 +1,25 @@
+---
+term: "Voice cloning"
+definition: "The process of training an AI model on a person's voice so it can produce new speech in that voice from any text input."
+related: ["AI clone", "Text-to-speech", "Speech synthesis", "ElevenLabs"]
+---
+
+**Voice cloning** is the process of training a neural network on samples of a specific person's voice so it can synthesize new speech in that voice. The trained model accepts text input and produces audio output that sounds like the cloned person reading that text.
+
+Modern voice cloning (as of 2026) requires roughly 10-30 minutes of clean source audio to produce indistinguishable-from-real output. The leading providers — ElevenLabs, Replica Studios, OpenAI's voice engine — all converge on similar quality from similar training data.
+
+**What clones can do today:**
+- Read any text in the cloned voice
+- Multiple languages (one clone, many tongues)
+- Emotional inflection driven by punctuation and SSML tags
+- Stable cadence and pronunciation across long-form output
+
+**What clones still struggle with:**
+- Sustained emotional range (extended anger, joy reads cartoonish)
+- Singing (separate models)
+- Real-time conversational latency under 200ms
+- Heavy accent shifts the source voice didn't demonstrate
+
+At DFY Content, every client gets a dedicated voice ID on their own ElevenLabs Pro account. We use ElevenLabs v2 multilingual specifically because v3 doesn't support Pro custom clones in our pipeline. Performance is driven through a [script normalization](/glossary/script-normalization) step that applies our punctuation playbook.
+
+See also: [voice cloning vs deepfake](/blog/voice-cloning-vs-deepfake) for the consent-driven distinction.
