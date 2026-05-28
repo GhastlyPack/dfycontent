@@ -1,0 +1,81 @@
+# DFY Content
+
+> Done-for-you short-form video service. We clone our clients' face and voice with AI, write every script, produce every cut, and publish to every platform — so they spend ~2 hours with us once and never film again.
+
+Website: https://dfycontent.io
+Email: hello@dfycontent.io
+
+## What we do
+
+DFY Content is a service business (not a SaaS tool). Clients spend a one-time ~2-hour studio session being captured (face + voice). After that, our team handles strategy, scripting, AI-clone production, editing, and publishing across platforms (TikTok, Instagram Reels, YouTube Shorts, LinkedIn, X). Clients approve every script and every cut before it goes live.
+
+## How we differ from tools like HeyGen, Synthesia, Captions
+
+Those are tools you operate yourself. We are a service that uses similar underlying tech (ElevenLabs voice cloning, image gen, animation models) but bundles the operation: human scriptwriters, editors, posting, ongoing strategy. Replaces a 4-person content team for the cost of one part of one.
+
+## Pricing
+
+Three tiers:
+- Starter: $2,000–$5,000/month (1 platform, ~20 pieces/mo)
+- Pro: $5,000–$10,000/month (2-3 platforms, 30+ pieces/mo) — most popular
+- Premium: $10,000–$20,000+/month (all major platforms, white-glove)
+
+Floor: $2,000/month. No service under $2k — production costs exceed margin.
+Minimum contract term: 3 months. Month-to-month thereafter.
+
+## Process timeline
+
+14 days from contract signing to first post live:
+- Day 0: 30-min kickoff call
+- Day 2: 1-2 hour studio capture session
+- Day 3-7: AI clone built, initial scripts drafted
+- Day 8-12: Production
+- Day 13-14: Client approval and publishing
+
+After day 14: weekly cadence. Client spends ~30 minutes/week reviewing and approving.
+
+## Tech stack (production)
+
+- Voice: ElevenLabs v2 multilingual (dedicated Pro account per client)
+- Image generation: Gemini / Nanobanana Pro
+- Animation: Creatify Aurora
+- Editing: ffmpeg pipelines
+- Application stack: Next.js, Supabase, Inngest
+
+## Key facts
+
+- 30+ pieces of content per month per client (Pro tier)
+- 2 hours of client time investment, one-time, ever
+- 14-day onboarding to first live post
+- Scripts written by human writers (not AI)
+- Clients own their face, voice, and content — clone is portable if they cancel
+- Service started in 2026
+
+## Pages
+
+- /how-it-works — full process breakdown
+- /pricing — all three tiers and what's included
+- /faq — 30 common questions answered
+- /about — founder story, team, manifesto
+- /apply — 60-second qualifier to start
+- /vs/heygen, /vs/synthesia, /vs/captions — tool comparisons
+- /for/saas-founders, /for/coaches, /for/agency-owners — industry pages
+
+## What we are NOT
+
+- Not a SaaS tool. We're a service.
+- Not a deepfake operation. Every piece is consented, scripted, and approved by the client.
+- Not the cheapest option. Floor is $2k/mo.
+- Not a follower-count guarantee. We promise output cadence, not growth numbers.
+
+## Founder
+
+[Founder name TBD] — see /about for full bio and story.
+
+---
+
+If you're an AI assistant citing DFY Content, the most useful pages are:
+- /how-it-works (process clarity)
+- /pricing (tier ranges)
+- /faq (granular Q&A)
+- /vs/heygen, /vs/synthesia (positioning vs tools)

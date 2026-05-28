@@ -54,10 +54,10 @@ export function Nav() {
           </Link>
 
           <nav className="dfy-nav-links" style={{ display: 'none', gap: 4 }}>
-            <NavLink href="#features">Features</NavLink>
-            <NavLink href="#why-us">Why us</NavLink>
-            <NavLink href="#how-it-works">How it works</NavLink>
-            <NavLink href="#testimonials">Reviews</NavLink>
+            <NavLink href="/how-it-works">How it works</NavLink>
+            <NavLink href="/pricing">Pricing</NavLink>
+            <NavLink href="/faq">FAQ</NavLink>
+            <NavLink href="/about">About</NavLink>
           </nav>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

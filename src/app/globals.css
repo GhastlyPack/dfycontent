@@ -286,7 +286,28 @@ a {
 /* Footer */
 @media (min-width: 768px) {
   .dfy-footer-grid {
-    grid-template-columns: 2fr 1fr 1fr !important;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr !important;
+  }
+}
+
+/* Pricing grid */
+@media (min-width: 768px) {
+  .dfy-pricing-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+@media (min-width: 1024px) {
+  .dfy-pricing-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* Founder grid on /about */
+@media (max-width: 640px) {
+  .dfy-founder-grid {
+    grid-template-columns: 1fr !important;
+    justify-items: center;
+    text-align: center;
   }
 }
 
